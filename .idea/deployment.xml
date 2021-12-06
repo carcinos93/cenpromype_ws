@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="OQM">
+    <serverData>
+      <paths name="CENPROMYPE">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/httpdocs/ws" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/vendor" />
+            <excludedPath local="true" path="$PROJECT_DIR$/storage" />
+            <excludedPath local="true" path="$PROJECT_DIR$/bootstrap" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="OQM">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/cenpromype_ws" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/vendor" />
+            <excludedPath local="true" path="$PROJECT_DIR$/storage" />
+            <excludedPath local="true" path="$PROJECT_DIR$/bootstrap" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

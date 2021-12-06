@@ -1,0 +1,8 @@
+[17-Feb-2021 16:41:55 UTC] PHP Fatal error:  Uncaught ReflectionException: Class session does not exist in /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Container/Container.php:805
+Stack trace:
+#0 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Container/Container.php(805): ReflectionClass->__construct('session')
+#1 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Container/Container.php(687): Illuminate\Container\Container->build('session')
+#2 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(796): Illuminate\Container\Container->resolve('session', Array, true)
+#3 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Container/Container.php(633): Illuminate\Foundation\Application->resolve('session', Array)
+#4 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(781): Illuminate\Container\Container->make('session', Array)
+#5 /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Co in /home/oqmdev/public_html/ws/vendor/laravel/framework/src/Illuminate/Container/Container.php on line 807

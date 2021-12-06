@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8185b79f-827e-42b7-9020-1dc5b5698843" name="OQM" url="">
+        <fileTransfer explicitFtps="false" host="72.167.226.188" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="8e2bbf2b-f375-4c16-b64e-fecffab41ab6" name="CENPROMYPE" url="http://66.70.178.218">
+        <fileTransfer explicitFtps="false" host="66.70.178.218" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
