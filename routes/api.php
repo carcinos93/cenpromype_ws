@@ -163,21 +163,24 @@ Route::prefix('catalogos')->middleware(['auditoria'])->group(function () {
 
 Route::post('/traducir', 'TraductorController@Traducir');
 
-Route::prefix('listas')->middleware(['auditoria'])->group(function () {
-     Route::get('/paises', 'CatalogosController@PaisesLista');
-     Route::get('/grupo-indicadores', 'CatalogosController@GrupoIndicadoresLista');
-     Route::get('/indicadores', 'CatalogosController@IndicadorLista');
-     Route::get('/fuente-informacion', 'CatalogosController@FuenteInformacionLista');
-     Route::get('/sectores', 'CatalogosController@SectorEconomicoLista');
 
-     Route::get('/productos', 'CatalogosController@ProductoLista');
-     Route::get('/servicios', 'CatalogosController@ServicioLista');
-     Route::get('/grupos', 'CatalogosController@GrupoLista');
-     Route::get('/documentos', 'CatalogosController@DocumentoLista');
-     Route::get('/palabras', 'TBController@PalabrasLista');
-    Route::get('/roles', function ( ) {
-        return \App\Models\Usuarios\Rol::selectRaw('CODIGO_ROL as id, NOMBRE_ROL as descripcion')->get();
-    });
+Route::prefix('listas')->group(function () {
+     Route::get('/paises', 'CatalogosController@PaisesLista');
+     Route::middleware(['auditoria'])->group(function () {
+        Route::get('/grupo-indicadores', 'CatalogosController@GrupoIndicadoresLista');
+        Route::get('/indicadores', 'CatalogosController@IndicadorLista');
+        Route::get('/fuente-informacion', 'CatalogosController@FuenteInformacionLista');
+        Route::get('/sectores', 'CatalogosController@SectorEconomicoLista');
+        Route::get('/productos', 'CatalogosController@ProductoLista');
+        Route::get('/servicios', 'CatalogosController@ServicioLista');
+        Route::get('/grupos', 'CatalogosController@GrupoLista');
+        Route::get('/documentos', 'CatalogosController@DocumentoLista');
+        Route::get('/palabras', 'TBController@PalabrasLista');
+       Route::get('/roles', function ( ) {
+           return \App\Models\Usuarios\Rol::selectRaw('CODIGO_ROL as id, NOMBRE_ROL as descripcion')->get();
+       });
+     });
+    
 });
 
 # metodos para el visitante (login, registro etc)
