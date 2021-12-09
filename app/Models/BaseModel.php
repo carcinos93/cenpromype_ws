@@ -10,7 +10,7 @@ class BaseModel extends Model
     public function getFiltroGeneral() {
         return $this->filtroGeneral;
     }
-
+    
     public function getNoDuplicados() {
         return $this->no_duplicados;
     }

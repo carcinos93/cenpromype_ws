@@ -201,7 +201,7 @@ class Controller extends BaseController
 
    /**
     * Funcion de actualizacion de registros
-    * @param Model $klass Modelo de datos
+    * @param BaseModel $klass Modelo de datos
     * @param object $keyValue valor del registro
     * @param array $updateColumns columnas a actualizar
     * @param Request $request objeto Request
@@ -211,6 +211,7 @@ class Controller extends BaseController
           $dataUpdate = [];
           $__id = $request->input('__id');
        try {
+            
             foreach ($updateColumns as $key => $value) {
            //var_dump();
            $dataUpdate[ $key ] = $request->input(  $value );
