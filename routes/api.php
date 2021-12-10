@@ -28,6 +28,7 @@ Route::get('/test', function () {
 });
 
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
+Route::post('registro', [\App\Http\Controllers\PortalController::class, 'registro']);
 
 Route::prefix('usuarios')->middleware(['auditoria'])->group( function () {
      //USUARIOS
