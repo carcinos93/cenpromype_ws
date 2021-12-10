@@ -7,16 +7,20 @@ import { Button } from 'primereact/button';
 import Identificacion from './formularios/identificacion';
 import Institucion from './formularios/institucion';
 import Usuario from './formularios/usuario';
+import Axios from 'axios';
 
 
 export const Registro = () => {
   
     let [ activeIndex, setActiveIndex  ] = useState(0);
     const onSubmit =(data) => {
-       
-        console.log(data);
-            
-
+        Axios.post( `${window.baseUrl}api/registro`, JSON.stringify(data), { headers: { 'Content-Type': 'application/json', 'Accept' : 'application/json' } }  )
+        .then((response) => { 
+            if (response.data.success) {
+                alert( response.data.message );
+            }
+        })
+        .catch((err) => console.log(err));
     }
     const atras = (  ) => {
         let s = activeIndex-=1;
@@ -71,9 +75,7 @@ export const Registro = () => {
                                     <Usuario watch={watch} errors={errors} control={control}/>
                                 </TabPanel>
                             </TabView>
-                        </form>
-
-                       
+                        </form>                       
                         </div>
                         <div className="card-footer">
                         { activeIndex > 0 &&  <Button label="Anterior" className="p-mr-2" onClick={ (e) => atras()   }   />}

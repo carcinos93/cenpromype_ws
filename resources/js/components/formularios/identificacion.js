@@ -16,7 +16,7 @@ export default  class Identificacion extends Component {
             anios.push( { id: i, descripcion: i.toString() } );
         }
 
-        return anios.sort( (a, b) => a.id < b.id  );
+        return anios.sort( (a, b) => a.id > b.id  );
     }
 
    async paises() {

@@ -80863,7 +80863,7 @@ var Identificacion = /*#__PURE__*/function (_Component) {
       }
 
       return anios.sort(function (a, b) {
-        return a.id < b.id;
+        return a.id > b.id;
       });
     }
   }, {
@@ -81633,6 +81633,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _formularios_identificacion__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./formularios/identificacion */ "./resources/js/components/formularios/identificacion.js");
 /* harmony import */ var _formularios_institucion__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./formularios/institucion */ "./resources/js/components/formularios/institucion.js");
 /* harmony import */ var _formularios_usuario__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./formularios/usuario */ "./resources/js/components/formularios/usuario.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_9__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -81654,6 +81656,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 var Registro = function Registro() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
       _useState2 = _slicedToArray(_useState, 2),
@@ -81661,7 +81664,18 @@ var Registro = function Registro() {
       setActiveIndex = _useState2[1];
 
   var onSubmit = function onSubmit(data) {
-    console.log(data);
+    axios__WEBPACK_IMPORTED_MODULE_9___default.a.post("".concat(window.baseUrl, "api/registro"), JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.data.success) {
+        alert(response.data.message);
+      }
+    })["catch"](function (err) {
+      return console.log(err);
+    });
   };
 
   var atras = function atras() {

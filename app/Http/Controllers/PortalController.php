@@ -34,12 +34,12 @@ class PortalController extends Controller {
                             function ($message) use ($nombre_completo, $correo) {
                         $message->from('desarrollo.nelson@gmail.com', 'CENPROMYPE');
                         $message->to($correo, $nombre_completo,);
-
                         $message->subject('Bienvenido');
                         // $message->priority(3);
                         // $message->attach('pathToFile');
-                         return $this->respuesta(true, "Correo enviado");
                             });
+
+                    return $this->respuesta(true, "Correo enviado");
                     } catch (\Exception $exc) {
                           logger('error en registro envio correo ' . $exc->getMessage() .  ', archivo: ' . $exc->getFile() . '( linea: ' . $exc->getLine() );
                           return $this->respuesta(false, "Fallo en el envio de correo ".  $exc->getMessage());
