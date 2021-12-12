@@ -19,9 +19,10 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
 
 
 
-    const delay = useCallback(( e ) => {
+    const delay = useCallback(( e, field ) => {
         e.persist();
         if ( typeof OnDelayChange != "function" ) {
+            field.onChange(e.target.value);
             return;
         }
         if ( timer ) {
@@ -30,25 +31,35 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
         }
         let timeout = setTimeout( function () {
             if ( typeof OnDelayChange == "function" ) {
-                setTimer( null );
                 OnDelayChange( e ); 
+                field.onChange(e.target.value);
+                setTimer( null );
             }}, 2000  );
         setTimer( timeout );
     });
 
   
     const getFormErrorMessage = (name, label) => {
-        //console.log(errors);
-        return errors[name] && <small className="p-error"> {label} es requerido </small>
+        if (errors[name]) {
+            if (errors[name].type == "required") {
+                return <small className="p-error"> {label} es requerido </small>
+            } else {
+                return <small className="p-error"> { errors[name].message } </small>
+            }
+        }
+        return "";
     };
 
     const controlField = ( field  ) =>  {
         switch (type) {
             case 'textbox':
-                return  ( 
+                return  <InputText {...field} id={name}  /> 
+                    
+            case 'delayTextBox':
+            return ( 
                     <span className={ timer && typeof OnDelayChange  == "function" ?  "p-input-icon-left" : ""}>
                              { timer && typeof OnDelayChange  == "function" ? <i className="pi pi-spin pi-spinner"></i> : <i/> }
-                            <InputText {...field} id={name}  onKeyDown={(e) =>  delay(e) }  /> 
+                            <InputText id={name}  onKeyDown={(e) =>  delay(e, field) }  /> 
                     </span>
                     )
             case 'radio': 
@@ -79,12 +90,10 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
                 return  <InputText {...field} id={name} type="password"  /> 
 
             case 'recaptcha': 
-
                     return ( 
                         <div className='p-m-auto p-d-inline'>
                             <ReCAPTCHA onChange={ (e) => { field.onChange(e);  } } sitekey="6LdfFHAaAAAAAIvUfxf6viOCpYKVzfLBp0WhNi-_" />
                         </div>
-    
                     )
                 default: 
             return null

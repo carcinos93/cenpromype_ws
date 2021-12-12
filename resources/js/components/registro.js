@@ -53,7 +53,7 @@ export const Registro = () => {
             actividad_economica: null
         };
       
-        const { control, formState: { errors }, handleSubmit, reset, watch } = useForm({ defaultValues });    
+        const { control, formState: { errors }, handleSubmit, reset, watch, getValues } = useForm({ defaultValues, mode: 'all' });    
     return ( 
         
         <div className="container w-100 h-100">
@@ -62,17 +62,16 @@ export const Registro = () => {
                     <div className="card">
                         <div className="card-header"> Registrarte </div>
                         <div className="card-body">
-
                         <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
                             <TabView renderActiveOnly={false}  onTabChange={ (e) => setActiveIndex( e.index ) } activeIndex={ activeIndex } >
                                 <TabPanel header="Datos generales">
-                                   {<Identificacion errors={errors} control={control} />}
+                                   {<Identificacion getValues={getValues} errors={errors} control={control} />}
                                 </TabPanel>
                                 <TabPanel header="Datos de organización">
-                                    {<Institucion errors={errors} control={control}/> }
+                                    {<Institucion getValues={getValues} errors={errors} control={control}/> }
                                 </TabPanel>
                                 <TabPanel header="Datos de usuario">
-                                    <Usuario watch={watch} errors={errors} control={control}/>
+                                    <Usuario getValues={getValues} watch={watch} errors={errors} control={control}/>
                                 </TabPanel>
                             </TabView>
                         </form>                       

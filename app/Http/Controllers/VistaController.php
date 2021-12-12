@@ -98,7 +98,9 @@ class VistaController extends Controller {
 
     public function RenderDocumento($iddocumento) {
         $documento = TB\Documento::find( $iddocumento );
-        return $documento['CONTENIDO'];
+        return view('documento.documento', [ 'documento' => $documento ]);
+
+        //return $documento['CONTENIDO'];
     }
 
     public function RenderOk() {

@@ -80652,10 +80652,11 @@ var Campo = function Campo(_ref) {
     }
   };
 
-  var delay = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (e) {
+  var delay = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (e, field) {
     e.persist();
 
     if (typeof OnDelayChange != "function") {
+      field.onChange(e.target.value);
       return;
     }
 
@@ -80666,33 +80667,48 @@ var Campo = function Campo(_ref) {
 
     var timeout = setTimeout(function () {
       if (typeof OnDelayChange == "function") {
-        setTimer(null);
         OnDelayChange(e);
+        field.onChange(e.target.value);
+        setTimer(null);
       }
     }, 2000);
     setTimer(timeout);
   });
 
   var getFormErrorMessage = function getFormErrorMessage(name, label) {
-    //console.log(errors);
-    return errors[name] && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
-      className: "p-error"
-    }, " ", label, " es requerido ");
+    if (errors[name]) {
+      if (errors[name].type == "required") {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+          className: "p-error"
+        }, " ", label, " es requerido ");
+      } else {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+          className: "p-error"
+        }, " ", errors[name].message, " ");
+      }
+    }
+
+    return "";
   };
 
   var controlField = function controlField(field) {
     switch (type) {
       case 'textbox':
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_inputtext__WEBPACK_IMPORTED_MODULE_1__["InputText"], _extends({}, field, {
+          id: name
+        }));
+
+      case 'delayTextBox':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
           className: timer && typeof OnDelayChange == "function" ? "p-input-icon-left" : ""
         }, timer && typeof OnDelayChange == "function" ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
           className: "pi pi-spin pi-spinner"
-        }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_inputtext__WEBPACK_IMPORTED_MODULE_1__["InputText"], _extends({}, field, {
+        }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_inputtext__WEBPACK_IMPORTED_MODULE_1__["InputText"], {
           id: name,
           onKeyDown: function onKeyDown(e) {
-            return delay(e);
+            return delay(e, field);
           }
-        })));
+        }));
 
       case 'radio':
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -81538,14 +81554,16 @@ var Usuario = /*#__PURE__*/function (_Component) {
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_campo__WEBPACK_IMPORTED_MODULE_2__["Campo"], {
         errors: this.props.errors,
         rules: {
-          required: true
+          required: true,
+          validate: function validate(v) {
+            return v != "admin" || "El usuario ".concat(v, " ya existe");
+          }
         },
         control: this.props.control,
         OnDelayChange: function OnDelayChange(e) {
           return _this2.onDelayUsuario(e);
         },
-        on: true,
-        type: "textbox",
+        type: "delayTextBox",
         label: "Nombre de usuario",
         name: "usuario",
         cssClass: "p-col-12"
@@ -81556,13 +81574,16 @@ var Usuario = /*#__PURE__*/function (_Component) {
         },
         control: this.props.control,
         type: "password",
-        label: "Password",
+        label: "Contrase\xF1a",
         name: "password",
         cssClass: "p-col-12"
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_campo__WEBPACK_IMPORTED_MODULE_2__["Campo"], {
         errors: this.props.errors,
         rules: {
-          required: true
+          required: true,
+          validate: function validate(v) {
+            return _this2.props.getValues('password') == v || "No coincide con la contraseña";
+          }
         },
         control: this.props.control,
         type: "password",
@@ -81594,7 +81615,7 @@ var Usuario = /*#__PURE__*/function (_Component) {
         control: this.props.control,
         type: "recaptcha",
         label: "",
-        name: "recaptcah",
+        name: "recaptcha",
         cssClass: "p-col-12 p-m-auto"
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "p-field p-mt-5"
@@ -81708,13 +81729,15 @@ var Registro = function Registro() {
   };
 
   var _useForm = Object(react_hook_form__WEBPACK_IMPORTED_MODULE_2__["useForm"])({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    mode: 'all'
   }),
       control = _useForm.control,
       errors = _useForm.formState.errors,
       handleSubmit = _useForm.handleSubmit,
       reset = _useForm.reset,
-      watch = _useForm.watch;
+      watch = _useForm.watch,
+      getValues = _useForm.getValues;
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container w-100 h-100"
@@ -81740,16 +81763,19 @@ var Registro = function Registro() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_tabview__WEBPACK_IMPORTED_MODULE_3__["TabPanel"], {
     header: "Datos generales"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_formularios_identificacion__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    getValues: getValues,
     errors: errors,
     control: control
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_tabview__WEBPACK_IMPORTED_MODULE_3__["TabPanel"], {
     header: "Datos de organizaci\xF3n"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_formularios_institucion__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    getValues: getValues,
     errors: errors,
     control: control
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(primereact_tabview__WEBPACK_IMPORTED_MODULE_3__["TabPanel"], {
     header: "Datos de usuario"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_formularios_usuario__WEBPACK_IMPORTED_MODULE_8__["default"], {
+    getValues: getValues,
     watch: watch,
     errors: errors,
     control: control

@@ -9,24 +9,45 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 class PortalController extends Controller {
     
-    public  function registro() {
-        $anio = request()->input('anio');
-        $apellido = request()->input('apellido');
-        $confirmarPassword = request()->input('confirmarPassword');
-        $correo = request()->input('correo');
+    public function registro() {
+
         $nombre = request()->input('nombre');
+        $apellido = request()->input('apellido');
+        $anio = request()->input('anio');
+       
+        $correo = request()->input('correo');
+       
         $pais_residencia = request()->input('pais_residencia');
         $password = request()->input('password');
-        $recaptcah = request()->input('recaptcah');
+        $confirmarPassword = request()->input('confirmarPassword');
+
+        $sexo = request()->input('sexo');        
+        $recaptcha = request()->input('recaptcha');
+
+        
         $recibirBoletin = request()->input('recibirBoletin');
-        $sexo = request()->input('sexo');
         $usuario = request()->input('usuario');
         $tipo_institucion = request()->input('tipo_institucion');
         $nombre_institucion = request()->input('nombre_institucion');
         $empresa_tamanyo = request()->input('empresa_tamanyo');
         $actividad_economica = request()->input('actividad_economica');
         
-        
+        $validacion = Validator::make(request()->all(), [
+            'nombre' => 'required',
+            'apellido' => 'required',
+            'correo' => 'required',
+            'pais_residencia' => 'required',
+            'sexo' => 'required',
+            'tipo_institucion' => 'required',
+            'recaptcha' => ['required', new \App\Rules\Recaptcha( request() )],
+            'usuario' => [ 
+                'required',
+                \Illuminate\Validation\Rule::unique('TB_USUARIOS_SISTEMA', 'USUARIO')
+            ]
+        ]);
+        if ( $validacion->fails()) {
+            return $this->respuesta(false, 'datos no validos', [ 'errores' => $validacion->errors() ]);           
+        }
         $nombre_completo = "$nombre $apellido";
         
             try {
