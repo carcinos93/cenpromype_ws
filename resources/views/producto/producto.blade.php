@@ -1,9 +1,23 @@
 
+<style>
+    #listaProductos svg text { font-family: inherit !important; font-size: 1.3rem; }
+    #listaProductos svg { width: 100%; height:100%}
+    #listaProductos svg path[id*="linea"] { stroke-width: 4px;}
+</style>
 <div class="elementor-container">
     <div class="p-grid p-jc-center">
-        <div class="p-col-12 p-m-t-5">
-            <h2 class="elementor-heading-title elementor-size-default p-text-center" >
-                Descripcion del sector Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium asperiores dolores
+        <div  class="p-col-12 p-mt-5">
+            <div id="navegacion-ruta" class="p-text-uppercase"></div> 
+        </div>
+        <div class="p-col-12 p-mt-5 p-text-center" id="app">
+            <rotor-imagenes :tiempo="5000" :deshabilitar-botones="true" imagenes="{{ $sector->BANNER }}" 
+                urlbase="{{ Wordpress::index() }}"></rotor-imagenes>
+            <!--<img src="{{ Wordpress::recurso( $sector->BANNER )  }}" class="img-fluid"  />-->
+        </div>
+        <div class="p-col-12 p-m-t-5" id="sector-descripcion">
+            <h2 class="elementor-heading-title elementor-size-default p-text-justify" >
+
+                {{ $sector->DESCRIPCION }}
             </h2>
             <div class="p-grid p-jc-end">
                 <div class="p-col-12 p-md-9">
@@ -12,7 +26,7 @@
                             <div class="p-inputgroup border-blue">
                                 <input type="text" placeholder="Buscar" class="color-azul p-pb-2 p-pt-2 p-col-md p-col-11" />
                                 <span class="p-inputgroup-addon bg-azul p-text-white">
-                                          <i class="pi pi-search"></i>
+                                    <i class="pi pi-search"></i>
                                 </span>
                             </div>
 
@@ -36,102 +50,70 @@
 
         </div>
         <div class="col no-gutter p-col-12">
-            <div class="p-grid">
-                @foreach( $productos as $producto )
-                    <div class="p-col-12 p-md-6">
-                        <div class="elementor-icon-wrapper p-text-center">
-                            <a  class="elementor-icon elementor-animation-bounce-in navegar-producto"  data-url="{{ route('vista.servicios', ['idproducto' => $producto['CODIGO_PRODUCTO'], 'idsector' => $idsector ])  }}" href="javascript:void(0)">
-                                <img src="{{ $url }}/{{  $producto['LOGO']  }}?v2.0" style="width:100%;height: auto"  />
-
-                            </a>
-                        </div>
-                    </div>
-                @endforeach
+            <div class="p-col-12" id="listaProductos">
+                
             </div>
+          
         </div>
 
     </div>
 </div>
 <script>
 
-    $(function () {
-        $(".navegar-producto").each(function (e) {
+    jQuery(function () {
+         var idSector = "{{ $idsector }}";
+	 //var filtros = [{"value":idSector,"col":"CODIGO_PAIS","op":"eq"}];		
+        jQuery("#listaProductos").carusel({
+            svg: '{{ Wordpress::uploads("imagenes/listaProductos.svg") }}',
+            dataSource: {
+                url: window.url_laravel + "api/vista/productos/" + idSector
+            },
+            noSelectColor: "#173051ff",
+            selectColor: "#F8911A",
+			loading: '{{ Wordpress::uploads("js/load.gif") }}',
+            rows: 5,
+            width: 45,
+            height:45,
+            urlBase: "{{Wordpress::index()}}",
+            onClickItem: function(event, data) {
 
-            const elem = $(this);
+                cargarServicios( window.url_laravel + "vistas/servicios/"  + data.CODIGO_PRODUCTO  + "/" + idSector );
+               
+            }
+        });
+        jQuery("html, body").delay(3000).animate({
+                scrollTop: jQuery("#sector-descripcion").offset().top - 120
+            });
+        
+            jQuery("#navegacion-ruta").breadcrumb({
+            items: [
+                { label: "INICIO", url: '{{ Wordpress::url("sectores") }}', cssClass: "color-azul" },
+                { label: "{{ $sector->SECTOR_ECONOMICO }}", cssClass: "color-naranja" }
+            ]
+        });
+        
+        jQuery(".navegar-producto").each(function (e) {
+
+            const elem = jQuery(this);
             elem.on('click', function () {
                 const url = elem.attr("data-url");
                 cargarServicios(url);
+
             });
 
         });
     });
 
-    function cargarServicios(url){
+    function cargarServicios(url) {
         cargando('');
         /**
-         * root2 esta definido en la vista sector/sector.blade.php
+         * root2 esta definido en la ls
          * */
-        $("#root2").load(url ,function(){
+         jQuery("#root2").load(url, function () {
+            jQuery("html, body").animate({
+                scrollTop: jQuery("#root2").offset().top
+            });
             swal.close();
         });
     }
 </script>
-
-<!--
-<div class="elementor-container elementor-column-gap-default" style="
-     ">
-    <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-1cf67905" data-id="1cf67905" data-element_type="column">
-        <div class="elementor-widget-wrap elementor-element-populated">
-            <section class="elementor-section elementor-inner-section elementor-element elementor-element-6fd96fb0 elementor-section-full_width elementor-section-height-default elementor-section-height-default" data-id="6fd96fb0" data-element_type="section">
-                <div class="elementor-container elementor-column-gap-default">
-                    <div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-21861db0" data-id="21861db0" data-element_type="column">
-                        <div class="elementor-widget-wrap elementor-element-populated">
-
-                            <section class="elementor-section elementor-inner-section elementor-element elementor-element-14b34dd9 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="14b34dd9" data-element_type="section">
-                                <div class="elementor-container elementor-column-gap-default">
-                                    foreach ($productos as $producto)
-                                        <div class="elementor-column elementor-col-20 elementor-inner-column elementor-element elementor-element-3b5254c4" data-id="3b5254c4" data-element_type="column">
-                                            <div class="elementor-widget-wrap elementor-element-populated">
-                                                <div class="elementor-element elementor-element-7cc56afd elementor-view-framed elementor-shape-square elementor-widget elementor-widget-icon animated fadeIn" data-id="7cc56afd" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
-
-                                                                <img src="../{  $producto['LOGO'] }}" style="width:100%;height: auto"  />
-
-
-                                                </div>
-                                                <!-<section class="elementor-section elementor-inner-section elementor-element elementor-element-14b2e856 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="14b2e856" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-                                                    <div class="elementor-container elementor-column-gap-default">
-                                                        <div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-4fe7ad6e" data-id="4fe7ad6e" data-element_type="column">
-                                                            <div class="elementor-widget-wrap elementor-element-populated">
-                                                                <div class="elementor-element elementor-element-26e9047d elementor-align-center elementor-widget elementor-widget-button" data-id="26e9047d" data-element_type="widget" data-widget_type="button.default">
-                                                                    <div class="elementor-widget-container">
-                                                                        <div class="elementor-button-wrapper">
-                                                                            <a href="#" class="elementor-button-link elementor-button elementor-size-lg" role="button">
-                                        <span class="elementor-button-content-wrapper">
-                                            <span class="elementor-button-text">  { $producto['NOMBRE_PRODUCTO'] }}  </span>
-                                        </span>
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </section>->
-                                            </div>
-                                        </div>
-                                    endforeach
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-</div>
-<script>-->
-
-
-
-
-

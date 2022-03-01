@@ -8,20 +8,18 @@
         <title> @yield('title') </title>
         
         <link rel="stylesheet" type="text/css" href=" {{ asset('css/app.css')  }}" />
-        <link rel="stylesheet" type="text/css" href=" {{ asset('css/styles.css')  }}" />
-        <link rel="stylesheet" type="text/css" href=" {{ asset('css/primeflex.css')  }}" />
         <link rel="stylesheet" type="text/css" href=" {{ asset('css/primeicons.css')  }}" />
         @yield('styles')
     </head>
     <body>
         <section class="h-100">
-                <div id="app"></div>
                 @yield('content')
         </section>
     </body>
     @yield('initialScript')
-    <script src="{{asset('js/app.js')}} " ></script>
-    <script src="{{asset('js/jquery.min.js')}} " ></script>
+    <script src="{{asset('js/jquery.min.js')}}" async></script>
+    <script src="{{asset('js/app.js')}}" async></script>
+
     @yield('scripts')
 
 </html>

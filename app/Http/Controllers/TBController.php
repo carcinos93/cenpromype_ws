@@ -68,7 +68,7 @@ class TBController extends Controller {
         return $this->update(TB\Producto::class, $id, array(
             //'CODIGO_SECTOR' => 'codigo_sector',
             'NOMBRE_PRODUCTO' => 'nombre',
-            //'LOGO' => 'logo',
+            'LOGO' => 'logo',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());
@@ -80,29 +80,48 @@ class TBController extends Controller {
 
     #DOCUMENTOS
     public function DocumentoAll(  ) {
-        return $this->getRecords(Models\TB\Documento::class, ['TB_DOCUMENTOS.*', 'TB_PRODUCTOS.NOMBRE_PRODUCTO'],
+        return $this->getRecords(Models\TB\Documento::class, 
+                array('TB_DOCUMENTOS.CODIGO_DOCUMENTO', 
+                    'TB_DOCUMENTOS.CODIGO_PRODUCTO', 
+                    'TB_DOCUMENTOS.DESCRIPCION_DOCUMENTO',
+                    'TB_DOCUMENTOS.ESTATUS',
+                    'TB_DOCUMENTOS.ACCESO', 
+                    'TB_PRODUCTOS.NOMBRE_PRODUCTO'),
             array(
                // ['left', 'CAT_SECTORES_ECONOMICOS', 'TB_DOCUMENTOS.CODIGO_SECTOR', '=', 'CAT_SECTORES_ECONOMICOS.CODIGO_SECTOR'],
                 ['left', 'TB_PRODUCTOS', 'TB_PRODUCTOS.CODIGO_PRODUCTO', '=', 'TB_DOCUMENTOS.CODIGO_PRODUCTO']
             ), '', request());
     }
     public function DocumentoInsert(  ) {
-        return $this->insert(Models\TB\Documento::class, array(
+        $resp = $this->insert(Models\TB\Documento::class, array(
             'CODIGO_PRODUCTO' => 'codigo_producto',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());
+       
+        
+        return $resp;
     }
     public function DocumentoUpdate( $id ) {
-        return $this->update(Models\TB\Documento::class, $id, array(
+        $resp = $this->update(Models\TB\Documento::class, $id, array(
             'CODIGO_PRODUCTO' => 'codigo_producto',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());
+       
+        return $resp;
+    }
+    
+    public function DocumentoFirst( $id ) {
+        return Models\TB\Documento::find($id);
+    }
+    
+    public function GenerarDocumento(   ) {
+        \App\Events\DocumentoSaved::dispatch( request()->input('CODIGO_DOCUMENTO')  );
     }
 
     # DOCUMENTOS X PALABRAS CLAVES
@@ -205,6 +224,10 @@ class TBController extends Controller {
             'CODIGO_SECTOR' => 'CODIGO_SECTOR',
             'ESTATUS' => 'ESTATUS'
         ), request());
+    }
+    
+    public function ProductoSectorDelete( $id ) {
+        return $this->delete(Models\TB\ProductoSector::class, $id, request());
     }
 
     /*#listas**/

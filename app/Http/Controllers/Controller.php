@@ -171,7 +171,10 @@ class Controller extends BaseController
         try {
 
             foreach ($insertColumns as $key => $value) {
-                $dataInsert[ $key ] = $request->input(  $value );
+                if ($request->has( $value )) {
+                    $dataInsert[ $key ] = $request->input(  $value );
+                }
+
 
                 if ($request->hasFile( $value . "_file" )) {
                     $this->uploadFiles( $dataInsert,$key, $request->file($value . "_file"), $opts, $__id );
@@ -211,14 +214,19 @@ class Controller extends BaseController
           $dataUpdate = [];
           $__id = $request->input('__id');
        try {
-            
             foreach ($updateColumns as $key => $value) {
-           //var_dump();
-           $dataUpdate[ $key ] = $request->input(  $value );
+             //var_dump();
+                /*
+                 * Se verifica si el campo ha sido enviado, 
+                 * solo se actualizara los campos que han sido "modificados" desde los formularios
+                 * **/
+             if ($request->has( $value )) {
+                               $dataUpdate[ $key ] = $request->input(  $value );
+             }
            $dataUpdate[ 'USUARIO_MODIFICACION' ] = $this->getUserName();
 
            if ($request->hasFile( $value . "_file" )) {
-               $this->uploadFiles( $dataInsert,$key, $request->file($value . "_file"), $opts, $__id );
+               $this->uploadFiles( $dataUpdate,$key, $request->file($value . "_file"), $opts, $__id );
            }
 
         }
@@ -282,6 +290,7 @@ class Controller extends BaseController
                ***/
               /* 1 = 1 se agrega para evitar problema con los 'AND'  agregados luego **/
               $k =  $k->whereRaw( "1 = 1 " . $where    , $valoresNuevos );
+              logger(  $k->toSql() );
               $total = $k->count();
               if ($total > 0) {
                   return ['valid' => false, 'message' => 'Registro duplicado'];
@@ -368,10 +377,15 @@ class Controller extends BaseController
            $data = Auth::GetData($token);
            return $data->NOMBRE_USUARIO;
        }
-       return null;
+       return 'ADMIN';
    }
 
    protected function log(\Exception $ex) {
        logger('archivo: ' . $ex->getFile() . ', linea: ' . $ex->getLine() . ',error: ' . $ex->getMessage() );
+   }
+
+
+   protected function DocumentPdf($url, $archivo) {
+      
    }
 }

@@ -1,12 +1,13 @@
-import React, { Component, useCallback, useState } from 'react';
+import React, { Component, createRef, useCallback, useRef, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { useForm, Controller } from 'react-hook-form';
 import ReCAPTCHA from "react-google-recaptcha";
-export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayChange, errors, OnChange } ) =>  {
-  
+export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayChange, errors, OnChange, referencia } ) =>  {
+   
     const [timer, setTimer  ] = useState(null);
+
     const [ selectedRadio, setSelectedRadio ] = useState(null);
     const [ selectedDropDown, setSelectedDropDown ] = useState(null);
     
@@ -16,8 +17,6 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
             OnChange(e);
         }
     }
-
-
 
     const delay = useCallback(( e, field ) => {
         e.persist();
@@ -82,7 +81,7 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
                 /** los valores de optionLabel deben ser string, si es numero debe ser convertido a string  **/
                 return ( !items ? <p> <i className="pi pi-spin pi-spinner"></i> Cargando...</p>  : 
                 <Dropdown id={name} name={name}  
-                optionLabel="descripcion" optionValue="id" value={selectedDropDown || ''} 
+                optionLabel="descripcion" optionValue="id" value={selectedDropDown == null || selectedDropDown == undefined ? '' :  selectedDropDown} 
                  options={!items ? [] : items} 
                  onChange={(e) =>  { field.onChange(e.value); OnControlChange(e); setSelectedDropDown(e.value)  }  } /> ) 
             
@@ -92,13 +91,15 @@ export const Campo = ({type, name,label,cssClass,items, rules, control, OnDelayC
             case 'recaptcha': 
                     return ( 
                         <div className='p-m-auto p-d-inline'>
-                            <ReCAPTCHA onChange={ (e) => { field.onChange(e);  } } sitekey="6LdfFHAaAAAAAIvUfxf6viOCpYKVzfLBp0WhNi-_" />
+                            <ReCAPTCHA ref={referencia}  onChange={ (e) => { field.onChange(e);  } } sitekey="6LdfFHAaAAAAAIvUfxf6viOCpYKVzfLBp0WhNi-_" />
                         </div>
                     )
                 default: 
             return null
             }
     }
+
+
 
         //
         return (

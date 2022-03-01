@@ -9,7 +9,10 @@
         "cerrar_sesion": "Cerrar sesión",
         "siguiente": "Siguiente",
         "anterior": "Anterior",
-        "recargar": "Recargar datos"
+        "recargar": "Recargar datos",
+        "guardar_cerrar": "Guardar y cerrar",
+        "registrarse": "Registrarse",
+        "actualizar_cerrar": "Actualizar y cerrar"
     },
     "mensajes": {
         "cambio_idioma": "Idioma ha sido cambiado",
@@ -21,7 +24,18 @@
             "confirmar": "Confirmar",
             "si": "Si",
             "no": "No"
-        }
+        },
+        "revisando": "Revisando...",
+        "seleccionar": "Seleccionar"
+    },
+    "validaciones": {
+        "required": "El campo es requerido",
+        "maxLength": "Maximo de caracteres permitido son {0}",
+        "equalLength": "Cantidad de caracteres requerida son {0}",
+        "email": "Correo no es valido",
+        "emptyOption": "Debe seleccionar una opcion",
+        "passwordEqual": "La contraseña no es igual",
+        "userExists": "Usuario ya existe"
     },
     "administrador": "ADMINISTRADOR",
     "titulo": "portal administrativo de plataforma bi",
@@ -85,10 +99,10 @@
     "formularios": {
         "usuarios": {
             "usuario": {
-                "nombre": "Nombre de usuario",
-                "correo": "Correo electrónico",
-                "estado": "Estado",
-                "password": "Contraseña"
+                "nombre": { "nombre_campo": "Nombre de usuario", "descripcion": "" },
+                "correo": { "nombre_campo": "Correo electrónico", "descripcion": "" },
+                "estado": { "nombre_campo": "Estado", "descripcion": "" },
+                "password": { "nombre_campo": "Contraseña", "descripcion": "" }
             },
             "rol": {
                 "nombre": "Nombre",
@@ -104,101 +118,125 @@
         },
         "tb": {
             "indicador": {
-                "fuente": "Fuente",
-                "pais": "País",
-                "indicador": "Indicador",
-                "anio": "Año",
-                "valor1": "Valor 1",
-                "valor2": "Valor 2"
+                "fuente": { "nombre_campo": "Fuente", "descripcion": "" },
+                "pais": { "nombre_campo": "País", "descripcion": "" },
+                "indicador": { "nombre_campo": "Indicador", "descripcion": "" },
+                "anio": { "nombre_campo": "Año", "descripcion": "" },
+                "valor1": { "nombre_campo": "Valor 1", "descripcion": "" },
+                "valor2": { "nombre_campo": "Valor 2", "descripcion": "" }
             },
             "producto": {
-                "sector": "Sector ecónomico",
-                "nombre": "Nombre",
-                "logo": "Logo",
-                "estatus": "Estado",
-                "acceso": "Acceso"
+                "sector": { "nombre_campo": "Sector ecónomico", "descripcion": "" },
+                "nombre": { "nombre_campo": "Nombre", "descripcion": "" },
+                "logo": { "nombre_campo": "Logo", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" },
+                "acceso": { "nombre_campo": "Acceso", "descripcion": "" }
             },
             "documento_servicio": {
-                "producto": "Producto",
-                "servicio": "Servicio",
-                "grupo": "Grupo",
-                "documento": "Documento"
+                "producto": { "nombre_campo": "Producto", "descripcion": "" },
+                "servicio": { "nombre_campo": "Servicio", "descripcion": "" },
+                "grupo": { "nombre_campo": "Grupo", "descripcion": "" },
+                "documento": { "nombre_campo": "Documento", "descripcion": "" }
             },
             "documento": {
-                "producto": "Producto",
-                "descripcion": "Descripción",
-                "estatus": "Estado",
-                "acceso": "Acceso",
-                "contenido": "Contenido",
-                "palabras": "Palabras claves",
-                "servicios": "Servicios",
-                "grupos": "Grupos"
+                "producto": { "nombre_campo": "Producto", "descripcion": "" },
+                "descripcion": { "nombre_campo": "Descripción", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" },
+                "acceso": { "nombre_campo": "Acceso", "descripcion": "" },
+                "contenido": { "nombre_campo": "Contenido", "descripcion": "" },
+                "palabras": { "nombre_campo": "Palabras claves", "descripcion": "" },
+                "servicios": { "nombre_campo": "Servicios", "descripcion": "" },
+                "grupos": { "nombre_campo": "Grupos", "descripcion": "" }
             },
             "documento_grupo": {
-                "grupo": "Grupo",
-                "estatus": "Estado"
+                "grupo": { "nombre_campo": "Grupo", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" }
             },
             "palabra_clave": {
-                "palabra": "Palabra clave",
-                "estatus": "Estado"
+                "palabra": { "nombre_campo": "Palabra clave", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" }
             },
             "servicios": {
-                "servicio": "Servicio",
-                "estatus": "Estado"
+                "servicio": { "nombre_campo": "Servicio", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" }
             }
         },
         "catalogos": {
             "indicadores": {
-                "nombre": "Título del indicador",
-                "unidad": "Unidad de medida",
-                "grupo_indicador": "Grupo de indicador",
-                "etiqueta1": "Etiqueta 1",
-                "etiqueta2": "Etiqueta 2"
+                "nombre": { "nombre_campo": "Título del indicador", "descripcion": "" },
+                "unidad": { "nombre_campo": "Unidad de medida", "descripcion": "" },
+                "grupo_indicador": { "nombre_campo": "Grupo de indicador", "descripcion": "" },
+                "etiqueta1": { "nombre_campo": "Etiqueta 1", "descripcion": "" },
+                "etiqueta2": { "nombre_campo": "Etiqueta 2", "descripcion": "" }
             },
             "pais": {
-                "nombre_pais": "Nombre",
-                "superficie": "Superficie",
-                "codigo_divisa": "Código divisa",
-                "iso2": "ISO 2",
-                "iso3": "ISO 3"
+                "nombre_pais": { "nombre_campo": "Nombre", "descripcion": "" },
+                "superficie": { "nombre_campo": "Superficie", "descripcion": "" },
+                "codigo_divisa": { "nombre_campo": "Código divisa", "descripcion": "" },
+                "iso2": { "nombre_campo": "ISO 2", "descripcion": "Define el código de identificación de las principales subdivisiones (por ejemplo, provincias o estados) del país" },
+                "iso3": { "nombre_campo": "ISO 3", "descripcion": "Define el código para representar países, territorios dependientes y zonas especiales de interés geográfico" }
             },
             "grupo_indicador": {
-                "nombre": "Nombre"
+                "nombre": { "nombre_campo": "Nombre", "descripcion": "" }
             },
             "departamento": {
-                "nombre": "Nombre",
-                "pais": "País"
+                "nombre": { "nombre_campo": "Nombre", "descripcion": "" },
+                "pais": { "nombre_campo": "País", "descripcion": "" }
             },
             "fuente_informacion": {
-                "fuente_informacion": "Fuente de información"
+                "fuente_informacion": { "nombre_campo": "Fuente de información", "descripcion": "" }
             },
             "sector_economico": {
-                "sector_economico": "Sector económico",
-                "descripcion": "Descripción",
-                "identificador": "Identificador",
-                "logo": "Logo",
-                "estatus": "Estado",
-                "acceso": "Acceso"
+                "sector_economico": { "nombre_campo": "Sector económico", "descripcion": "" },
+                "descripcion": { "nombre_campo": "Descripción", "descripcion": "" },
+                "identificador": { "nombre_campo": "Identificador", "descripcion": "" },
+                "logo": { "nombre_campo": "Logo", "descripcion": "" },
+                "banner": { "nombre_campo": "Banner", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" },
+                "acceso": { "nombre_campo": "Acceso", "descripcion": "" }
             },
             "tipo_empresa": {
-                "tipo_empresa": "Tipo de empresa"
+                "tipo_empresa": { "nombre_campo": "Tipo de empresa", "descripcion": "" }
             },
             "region": {
-                "nombre_region": "Nombre"
+                "nombre_region": { "nombre_campo": "Nombre", "descripcion": "" }
             },
             "actividades_economicas": {
-                "actividad": "Actividad económica"
+                "actividad": { "nombre_campo": "Actividad económica", "descripcion": "" }
             },
             "servicios": {
-                "nombre": "Nombre",
-                "descripcion": "Descripción",
-                "logo": "Logo",
-                "estatus": "Estado",
-                "acceso": "Acceso"
+                "nombre": { "nombre_campo": "Nombre", "descripcion": "" },
+                "descripcion": { "nombre_campo": "Descripción", "descripcion": "" },
+                "logo": { "nombre_campo": "Logo", "descripcion": "" },
+                "estatus": { "nombre_campo": "Estado", "descripcion": "" },
+                "acceso": { "nombre_campo": "Acceso", "descripcion": "" }
 
             }
-
-
+        },
+        "portal": {
+            "registro": {
+                "nombre": { "nombre_campo": "Nombre", "descripcion": "" },
+                "apellido": { "nombre_campo": "Apellido", "descripcion": "" },
+                "edad": { "nombre_campo": "Edad", "descripcion": "" },
+                "sexo": { "nombre_campo": "Sexo", "descripcion": "" },
+                "anioNacimiento": { "nombre_campo": "Año de nacimiento", "descripcion": "" },
+                "pais": { "nombre_campo": "País", "descripcion": "" },
+                "tipoInstitucion": { "nombre_campo": "Tipo institución", "descripcion": "" },
+                "sectorEconomico": { "nombre_campo": "Sector económico", "descripcion": "" },
+                "actividadEconomica": { "nombre_campo": "Actividad económica", "descripcion": "Este campo depende del sector ecónomico" },
+                "correo": { "nombre_campo": "Correo electrónico", "descripcion": "" },
+                "usuario": { "nombre_campo": "Nombre de usuario", "descripcion": "" },
+                "password": { "nombre_campo": "Contraseña", "descripcion": "" },
+                "repetirPassword": { "nombre_campo": "Corroborar contraseña", "descripcion": "" },
+                "boletin": { "nombre_campo": "¿Desea recibir boletines e información de interés?", "descripcion": "" },
+                "campos": {
+                    "sexo": {
+                        "masculino": { "valor": "Masculino" },
+                        "femenino": { "valor": "Femenino" },
+                        "otro": { "valor": "Otro" }
+                    }
+                }
+            }
         }
     }
 

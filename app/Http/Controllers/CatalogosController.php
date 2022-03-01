@@ -220,6 +220,7 @@ class CatalogosController extends Controller
             'DESCRIPCION' => 'descripcion',
             'IDENTIFICADOR' => 'identificador',
             'LOGO' => 'logo',
+            'BANNER' => 'banner',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso',
         ), request());
@@ -232,6 +233,7 @@ class CatalogosController extends Controller
             'DESCRIPCION' => 'descripcion',
             'IDENTIFICADOR' => 'identificador',
             'LOGO' => 'logo',
+            'BANNER' => 'banner',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso',
         ), request());

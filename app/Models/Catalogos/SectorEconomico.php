@@ -12,7 +12,7 @@ class SectorEconomico extends BaseModel
     public $incrementing = true;
     protected $table = 'CAT_SECTORES_ECONOMICOS';
     protected $primaryKey = 'CODIGO_SECTOR';
-    protected $fillable = ['SECTOR_ECONOMICO','DESCRIPCION','IDENTIFICADOR', 'LOGO', 'ESTATUS','ACCESO', 'FECHA_ADICION', 'USUARIO_ADICION'];
+    protected $fillable = ['SECTOR_ECONOMICO','DESCRIPCION','IDENTIFICADOR','BANNER', 'LOGO', 'ESTATUS','ACCESO', 'FECHA_ADICION', 'USUARIO_ADICION'];
     const CREATED_AT = 'FECHA_ADICION';
     const UPDATED_AT = 'FECHA_MODIFICACION';
     const KEY = 'CODIGO_SECTOR';

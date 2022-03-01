@@ -17,5 +17,11 @@ class UsuariosSistema extends BaseModel
     const CREATED_AT = 'FECHA_ADICION';
     const UPDATED_AT = 'FECHA_MODIFICACION';
     const KEY = 'ID';
-
+    const INACTIVO = 0;
+    const ACCESO = '00';
+    
+    protected $attributes = [
+        'ESTADO' => self::INACTIVO,
+        'ACCESO' => self::ACCESO
+    ];
 }

@@ -14,37 +14,99 @@ use Illuminate\Support\Facades\Hash;
 
 class VistaController extends Controller {
 
+    
+    /*** API ***/
+    public function sectores( ) {
+        return Catalogos\SectorEconomico::where('ESTATUS','=','ACTIVO')->get();
+    }
+
+    public function productos($sector) {
+        $query = DB::table('TB_PRODUCTOS')->whereExists( function ($q) use ($sector) {
+            $q->select(DB::raw(1))
+                    ->from('TB_PRODUCTOS_X_SECTORES')
+                    ->where('TB_PRODUCTOS_X_SECTORES.CODIGO_SECTOR', '=', $sector)
+                    ->where('TB_PRODUCTOS_X_SECTORES.ESTATUS', '=', 1)
+                    ->whereColumn('TB_PRODUCTOS_X_SECTORES.CODIGO_PRODUCTO', 'TB_PRODUCTOS.CODIGO_PRODUCTO');
+            
+        })->where('TB_PRODUCTOS.ESTATUS', '=', 'ACTIVO');
+        
+        $total = $query->count();
+        
+       $first = request()->input('first', 0);
+       $rows =  request()->input('rows', 10);
+
+       $first = $first == "null" ? 0 : $first;
+       $rows = $rows == "null" ? 10 : $rows;
+
+       $data = $query->skip( $first )->take( $rows )->get();
+        
+        return [ 'total' => $total, 'data' => $data ];
+        
+        /*return TB\Producto::select('TB_PRODUCTOS.*')->join('TB_PRODUCTOS_X_SECTORES', 'TB_PRODUCTOS.CODIGO_PRODUCTO', 'TB_PRODUCTOS_X_SECTORES.CODIGO_PRODUCTO')
+            ->where('TB_PRODUCTOS_X_SECTORES.CODIGO_SECTOR', '=', $sector)
+            ->where('TB_PRODUCTOS.ESTATUS', '=', 'ACTIVO')
+            ->where('TB_PRODUCTOS_X_SECTORES.ESTATUS', '=', 1)
+            ->get();*/
+    }
+    
+    public function servicios($producto) {
+         return Catalogos\Servicio::whereExists(function ($q) use ($producto) {
+               $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO')
+                ->join('TB_DOCUMENTOS', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
+                ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO', '=', $producto)
+                ->where('TB_DOCUMENTOS.ESTATUS', '=', 'ACTIVO')
+                ->where('TB_DOCUMENTOS_X_SERVICIO.ESTATUS', '=', 1)
+               ->whereColumn('CAT_SERVICIOS.CODIGO_SERVICIO', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_SERVICIO');
+        })->where('CAT_SERVICIOS.ESTATUS', '=', 'ACTIVO')->get();
+    }
+    
+    public function informes($servicio, $producto) {
+         $estatus = "ACTIVO";
+        return TB\Documento::where('ESTATUS', '=', $estatus)->whereExists(function ($q) use ($servicio, $producto) {
+            $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO','T1')
+                ->whereColumn('T1.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
+                ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO','=', $producto)
+                ->where('T1.CODIGO_SERVICIO', '=', $servicio)
+                ->where('T1.ESTATUS','=', 1);
+        })->get(["CODIGO_DOCUMENTO", "DESCRIPCION_DOCUMENTO", "RUTA_DOCUMENTO", "IMAGEN"]);
+    }
+
+    /*** VISTAS PARA PORTAL WORDPRESS ***/
+    
     public function RenderInicial() {
         return $this->RenderSectores();
     }
     public function RenderSectores() {
 
-        $sectores = Catalogos\SectorEconomico::where('ESTATUS','=','ACTIVO')->get();
-        //$url = "http://72.167.226.188/~oqmdev/portalcenpromype";
+        $sectores = $this->sectores();
         $url = config('sistema.paths.wordpress_sitio');  //'..';
-        return view('sector/sector' , ['sectores' => $sectores, 'url' => $url] );
+        return view('sector/sectores' , ['sectores' => $sectores, 'url' => $url] );
     }
 
     public function RenderProductos($sector) {
-        $url = config('sistema.paths.wordpress_sitio');  //'..';
-        $productos = TB\Producto::select('TB_PRODUCTOS.*')->join('TB_PRODUCTOS_X_SECTORES', 'TB_PRODUCTOS.CODIGO_PRODUCTO', 'TB_PRODUCTOS_X_SECTORES.CODIGO_PRODUCTO')
-            ->where('TB_PRODUCTOS_X_SECTORES.CODIGO_SECTOR', '=', $sector)
-            ->where('TB_PRODUCTOS.ESTATUS', '=', 'ACTIVO')
-            ->where('TB_PRODUCTOS_X_SECTORES.ESTATUS', '=', 1)
-            ->get();
+       
+        $dataSector = Catalogos\SectorEconomico::find($sector);
+        $productos = $this->productos($sector);
 
-        return view('producto/producto' , ['productos' => $productos, 'url' => $url, 'idsector' => $sector]);
+        return view('sector/sector' , ['productos' => $productos, 'idsector' => $sector, 'sector' => $dataSector  ]);
+    }
+    
+    public function RenderSector($sector) {
+         $dataSector = Catalogos\SectorEconomico::find($sector);
+        $productos = $this->productos($sector);
+
+        return view('sector/sector' , ['productos' => $productos, 'idsector' => $sector, 'sector' => $dataSector  ]);
     }
 
     public function RenderServicios($idproducto , $idsector) {
         $producto =  TB\Producto::where('CODIGO_PRODUCTO', '=', $idproducto)->first();
 
-        $sector = DB::table('TB_PRODUCTOS_X_SECTORES')
+        /*$sector = DB::table('TB_PRODUCTOS_X_SECTORES')
             ->where('CODIGO_PRODUCTO', '=', $idproducto)
             ->where('CODIGO_SECTOR','=', $idsector)
-            ->first();
+            ->first();*/
         //var_dump($sector);
-        $urlVistaProducto = route('vista.productos', ['sector' =>  $sector->CODIGO_SECTOR ]);
+        $urlVistaProducto = route('vista.sector', ['sector' =>  $idsector ]);
         $path = '../wp-content/uploads/2021/10/';
         $url = config('sistema.paths.wordpress_sitio');  //'..';
 
@@ -63,14 +125,7 @@ class VistaController extends Controller {
 
             ->distinct()
             ->get();*/
-        $servicios = Catalogos\Servicio::whereExists(function ($q) use ($idproducto) {
-               $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO')
-                ->join('TB_DOCUMENTOS', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
-                ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO', '=', $idproducto)
-                ->where('TB_DOCUMENTOS.ESTATUS', '=', 'ACTIVO')
-                ->where('TB_DOCUMENTOS_X_SERVICIO.ESTATUS', '=', 1)
-               ->whereColumn('CAT_SERVICIOS.CODIGO_SERVICIO', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_SERVICIO');
-        })->where('CAT_SERVICIOS.ESTATUS', '=', 'ACTIVO')->get();
+        $servicios = $this->servicios($idproducto);
 
         //echo $servicios;
         //echo $servicios;
@@ -82,16 +137,10 @@ class VistaController extends Controller {
     }
 
     public function RenderInformes($idservicio, $idproducto) {
-        $estatus = "ACTIVO";
+       
         $servicio = Catalogos\Servicio::find($idservicio);
-        $informes = TB\Documento::where('ESTATUS', '=', $estatus)->whereExists(function ($q) use ($idservicio, $idproducto) {
-            $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO','T1')
-                ->whereColumn('T1.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
-                ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO','=', $idproducto)
-                ->where('T1.CODIGO_SERVICIO', '=', $idservicio)
-                ->where('T1.ESTATUS','=', 1);
-        })->get();
-        //$informes = [];
+       
+        $informes = $this->informes($idservicio, $idproducto);
         return view('informe.informe', ['informes' => $informes, 'servicio' => $servicio]);
 
     }

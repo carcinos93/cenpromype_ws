@@ -8,32 +8,41 @@
     .contenedor-logo svg text, .contenedor-logo svg tspan { font-size: 25px !important; }
     .contenedor-logo.activo svg text  { fill: white !important; stroke: white !important;  }
     .contenedor-logo.activo svg text tspan  { fill: white !important; stroke: white !important;  }
+    
+    .navegar-servicio { padding-top: 4rem }
 </style>
 <input type="hidden" id="urlVista" value="{{ $urlVista }}"  />
 <div class="p-d-flex">
     <div class="p-grid p-jc-center">
-        <div class="p-col-12 p-m-b-4 p-text-center" >
+        <!--<div class="p-col-12 p-m-b-4 p-text-center" >
             <div  id="regresar-productos" class="btn-dinamico btn-2 p-m-auto" style="width: 250px"> REGRESAR A RUBROS</div>
 
-        </div>
-        <div class="p-col-12">
+        </div>-->
+        <!--<div class="p-col-12">
             <img src="{{ $url }}/{{  $producto['LOGO']  }}?v2.0" style="width:100%;height: auto"  />
-        </div>
+        </div>-->
         <div class="p-col-12">
             <h2> ¿QUÉ DESEAS BUSCAR? </h2>
         </div>
-        <div class="col no-gutter p-col-12">
+        <div class="col no-gutter p-col-12 p-shadow-7 bg-white">
             <div class="p-grid">
                 @foreach( $servicios as $servicio )
-                    <div class="p-col-12 p-md-4">
+                    <div class="p-col-12 p-md-4 p-pt-0">
                         <div class="p-text-center">
                             <!-- elementor-animation-bounce-i -->
-                            <a data-logo=".{{ $servicio['LOGO'] }}" data-idservicio="{{ $servicio['CODIGO_SERVICIO'] }}"
-                               data-url="{{ route('vista.informes', ['idservicio' => $servicio['CODIGO_SERVICIO'], 'idproducto' => $producto['CODIGO_PRODUCTO'] ])  }}"  class="elementor-icon n navegar-servicio" href="javascript:void(0)">
-                                <div class="contenedor-logo" id="contenedor-logo{{$servicio['CODIGO_SERVICIO']}}">
-                                    <!--<img src=".{{ $servicio['LOGO']  }}?v1.0" style="width:100%;height: auto"  />-->
+                            <a data-logo="{{ Wordpress::recurso($servicio['LOGO']) }}" data-idservicio="{{ $servicio['CODIGO_SERVICIO'] }}"
+                               data-url="{{ route('vista.informes', ['idservicio' => $servicio['CODIGO_SERVICIO'], 'idproducto' => $producto['CODIGO_PRODUCTO'] ])  }}"  class="elementor-icon navegar-servicio p-border-2 p-shadow-7" href="javascript:void(0)">
+                                <div class="p-mb-3 p-mr-5 p-ml-5 p-text-center" id="contenedor-logo{{$servicio['CODIGO_SERVICIO']}}">
+                                    <img src="{{ Wordpress::recurso($servicio['LOGO']) }}?v1.0" style="max-width:100%;height: auto"  />
                                 </div>
+                                <div class="p-d-block">
+                                        <div style="font-size: 1.4rem;line-height: 1.5rem;display: inline-table">
+                                            <div style="display: table-caption">
+                                                <span class="p-text-bold">  {{ $servicio['NOMBRE_SERVICIO'] }}  </span>
+                                            </div>
 
+                                        </div>
+                                 </div>  
                                 <!--<div class="contenedor-logo" id="contenedor-logo{$servicio->servicio['CODIGO_SERVICIO']}"></div>-->
                                <!-- <img src=".{  $servicio->servicio['LOGO']  }" style="width:100%;height: auto"  />-->
 
@@ -104,7 +113,7 @@
             const id = elem.attr("data-idservicio");
             const url = elem.attr("data-url");
             const logo = elem.attr("data-logo") + "?v1.2";
-            $.get({
+          /*  $.get({
                 url: logo,
                 dataType: 'text'
             }, function (data) {
@@ -112,13 +121,15 @@
                         .replace('id="Recuadro"', 'class="RECUADRO"')
                         .replace( /(st[0-9]{1,3})/gm,  '$1\_'  + id)
                 );
-            });
+            });*/
 
             elem.on('click', function () {
+                $(".navegar-servicio").removeClass("bg-naranja p-text-white");
                 $(".contenedor-logo").each(function () {
                     $(this).removeClass('activo');
                 } );
-                $("#contenedor-logo" + id ).addClass('activo');
+                $("#contenedor-logo" + id ).addClass('activo').parent("a").addClass("bg-naranja p-text-white");
+                
                 //$("#contenedor-logo" + id + ' svg  .RECUADRO').css({ "fill" :  "rgb(51, 85, 154)" })
                 //$("#contenedor-logo" + id + ' > svg > text').css({ "color" :  "white" })
                 cargarInformes(url);
@@ -132,8 +143,11 @@
     });
 
     function cargarInformes(url){
-        cargando('')
+        cargando('');
         $("#root_informes").load(url ,function(){
+            $("html, body").animate({
+                   scrollTop: $("#root_informes").offset().top 
+             });
             swal.close();
         });
     }

@@ -54,9 +54,23 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        'documentos' => [
+            'driver' => 'local',
+            'root' => base_path('public/recursos'),
+            'url' => env('APP_URL').'/recursos',
+            'visibility' => 'public'
+        ],
+        'wkhtmltopdf' => [ 
+            'driver' => 'local',
+            'root' => './exec',
+        ],
         'wordpress' => [
             'driver' => 'local',
             'root' => '../portalcenpromype'
+        ],
+         'wordpress_uploads' => [
+            'driver' => 'local',
+            'root' => '../portalcenpromype/wp-content/uploads'
         ],
         'lang' => [
           'driver' => 'local',

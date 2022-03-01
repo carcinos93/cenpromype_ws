@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\DB;
 /*
   |--------------------------------------------------------------------------
   | API Routes
@@ -29,7 +29,14 @@ Route::get('/test', function () {
 
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('registro', [\App\Http\Controllers\PortalController::class, 'registro']);
+Route::get('confirmar', [\App\Http\Controllers\PortalController::class, 'confirmar']);
+Route::get('existeUsuario', [\App\Http\Controllers\PortalController::class, 'existeUsuario']);
 
+Route::post('generar-pdf', [\App\Http\Controllers\TBController::class, 'GenerarDocumento' ]); //->middleware(['auditoria']);
+
+
+Route::get('generar-noticias', 'NoticiasController@CargarNoticias');
+Route::get('lista-noticias', 'NoticiasController@NoticiasAll');
 Route::prefix('usuarios')->middleware(['auditoria'])->group( function () {
      //USUARIOS
      Route::get('/usuario', 'UsuarioController@UsuarioAll');
@@ -68,6 +75,7 @@ Route::prefix('TB')->group(function () {
     Route::put('/documento-servicio/{id}', 'TBController@DocumentoServicioUpdate');
     #DOCUMENTO
     Route::get('/documento','TBController@DocumentoAll');
+    Route::get('/documento/{id}','TBController@DocumentoFirst');
     Route::post('/documento','TBController@DocumentoInsert');
     Route::put('/documento/{id}', 'TBController@DocumentoUpdate');
     Route::delete('/documento/{id}', 'TBController@DocumentoDelete');
@@ -86,6 +94,7 @@ Route::prefix('TB')->group(function () {
     Route::get('/producto-sector','TBController@ProductoSectorAll');
     Route::post('/producto-sector','TBController@ProductoSectorInsert');
     Route::put('/producto-sector/{id}','TBController@ProductoSectorUpdate');
+    Route::delete('/producto-sector/{id}','TBController@ProductoSectorDelete');
 
     #menu
     Route::get('/menu','CatalogosController@MenuAll');
@@ -164,9 +173,33 @@ Route::prefix('catalogos')->middleware(['auditoria'])->group(function () {
 
 Route::post('/traducir', 'TraductorController@Traducir');
 
+Route::prefix('vista')->group(function () {
+    Route::get('/sectores', 'VistaController@sectores');
+    Route::get('/sectores/{sector}', function ($sector) {
+        return App\Models\Catalogos\SectorEconomico::find( $sector  );
+    });
+    Route::get('/productos/{sector}', 'VistaController@productos')->name('api.vista.productos');
+    Route::get('/servicios/{producto}', 'VistaController@servicios');
+    Route::get('/informes/{producto}/{servicio}', 'VistaController@informes');
+    
+});
 
 Route::prefix('listas')->group(function () {
      Route::get('/paises', 'CatalogosController@PaisesLista');
+     Route::get("/tipo-instituciones", function () {
+         return DB::table("CAT_TIPO_INSTITUCIONES")->selectRaw("CODIGO_TIPO_INST as id, TIPO_INSTITUCION as descripcion")->get();
+     });
+
+     Route::get('/empresa-sector', function () {
+         $lang = request()->get('lang', 'es');
+         return DB::table('CAT_SECTOR_EMPRESA')->selectRaw("CODIGO_SEC_EMP AS id, SECTOR_EMPRESA as descripcion_es, SECTOR_EMPRESA_EN as descripcion_en")->get();
+     });
+
+     Route::get('/empresa-actividad/{sector}', function ($sector) {
+        $lang = request()->get('lang', 'es');
+        return DB::table('TB_EMPRESA_ACTIVIDAD')->selectRaw("CODIGO_ACT AS id, ACTIVIDAD_ECONOMICA as descripcion_es, ACTIVIDAD_ECONOMINCA_EN as descripcion_en")->where('CODIGO_SEC_EMP', '=', $sector)->get();
+    });
+
      Route::middleware(['auditoria'])->group(function () {
         Route::get('/grupo-indicadores', 'CatalogosController@GrupoIndicadoresLista');
         Route::get('/indicadores', 'CatalogosController@IndicadorLista');
@@ -183,16 +216,6 @@ Route::prefix('listas')->group(function () {
      });
     
 });
-
-# metodos para el visitante (login, registro etc)
-//Route::post('registro', [\App\Http\Controllers\LoginController::class, 'registro']);
-
-//Route::post('cambiarPassword', [\App\Http\Controllers\LoginController::class, 'cambiarPassword'])->middleware('auditoria');
-
-/* * metodos de estand* */
-# metodos que utilizan los estand
-
-#metodo que utilizan los objetos unity
 
 
 
