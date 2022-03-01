@@ -29,7 +29,7 @@ class NoticiasController extends Controller {
               
               $searchApi = new GoogleSearchApi();
               $searchApi->setEngineId($idBuscador);
-              $searchApi->setApiKey("AIzaSyD6Zp3ixl-zPFTdvOxRpUyYZSNjnXp00UY");
+              $searchApi->setApiKey("{API_KEY}");
               $parametros = [ 'start' => 1, 'num' => 10 , 'dateRestrict' => 'd7'];              
               foreach ($palabras as $palabra) {
 
