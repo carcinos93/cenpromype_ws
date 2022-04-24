@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Wordpress;
 use App\Models;
 use App\Models\Catalogos;
 use App\Models\TB;
@@ -10,7 +11,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Redirect;
 
 class VistaController extends Controller {
 
@@ -50,25 +51,42 @@ class VistaController extends Controller {
     }
     
     public function servicios($producto) {
-         return Catalogos\Servicio::whereExists(function ($q) use ($producto) {
+        return DB::table("CAT_SERVICIOS", "a")
+                ->selectRaw(DB::raw("a.*, (
+                                SELECT COUNT(*) FROM TB_DOCUMENTOS_X_SERVICIO b 
+				INNER JOIN TB_DOCUMENTOS c ON c.CODIGO_DOCUMENTO = b.CODIGO_DOCUMENTO
+				INNER JOIN TB_PRODUCTOS d ON d.CODIGO_PRODUCTO = c.CODIGO_PRODUCTO
+                                WHERE b.CODIGO_SERVICIO = a.CODIGO_SERVICIO AND c.CODIGO_PRODUCTO = ? 
+                                AND c.ESTATUS = 'ACTIVO') AS TOTAL_DOCUMENTOS "), [ $producto ])
+                                ->where('a.ESTATUS', '=', 'ACTIVO')
+                                ->get();
+         /*return Catalogos\Servicio::withCount( ['DocumentosXServicio' => function ($q) {
+                $q->with('ESTATUS', '=', 1);
+            }] )->where('CAT_SERVICIOS.ESTATUS', '=', 'ACTIVO')->get();*/
+         /*return Catalogos\Servicio::whereExists(function ($q) use ($producto) {
                $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO')
                 ->join('TB_DOCUMENTOS', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
                 ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO', '=', $producto)
                 ->where('TB_DOCUMENTOS.ESTATUS', '=', 'ACTIVO')
                 ->where('TB_DOCUMENTOS_X_SERVICIO.ESTATUS', '=', 1)
                ->whereColumn('CAT_SERVICIOS.CODIGO_SERVICIO', 'TB_DOCUMENTOS_X_SERVICIO.CODIGO_SERVICIO');
-        })->where('CAT_SERVICIOS.ESTATUS', '=', 'ACTIVO')->get();
+        })->where('CAT_SERVICIOS.ESTATUS', '=', 'ACTIVO')->get();*/
     }
     
-    public function informes($servicio, $producto) {
+    public function informes($producto, $servicio) {
          $estatus = "ACTIVO";
-        return TB\Documento::where('ESTATUS', '=', $estatus)->whereExists(function ($q) use ($servicio, $producto) {
+        $consulta = TB\Documento::where('TB_DOCUMENTOS.ESTATUS', '=', $estatus)
+        ->join( "TB_PRODUCTOS", "TB_DOCUMENTOS.CODIGO_PRODUCTO", "=", "TB_PRODUCTOS.CODIGO_PRODUCTO" )
+        ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO','=', $producto)
+        ->where('TB_PRODUCTOS.ESTATUS', '=', 'ACTIVO')
+        ->whereExists(function ($q) use ($servicio) {
             $q->select(DB::raw(1))->from('TB_DOCUMENTOS_X_SERVICIO','T1')
                 ->whereColumn('T1.CODIGO_DOCUMENTO', 'TB_DOCUMENTOS.CODIGO_DOCUMENTO')
-                ->where('TB_DOCUMENTOS.CODIGO_PRODUCTO','=', $producto)
                 ->where('T1.CODIGO_SERVICIO', '=', $servicio)
                 ->where('T1.ESTATUS','=', 1);
-        })->get(["CODIGO_DOCUMENTO", "DESCRIPCION_DOCUMENTO", "RUTA_DOCUMENTO", "IMAGEN"]);
+        });
+        //var_dump( $consulta->toSql() );
+        return $consulta->get(["TB_DOCUMENTOS.CODIGO_DOCUMENTO", "TB_DOCUMENTOS.DESCRIPCION_DOCUMENTO", "TB_DOCUMENTOS.RUTA_DOCUMENTO", "TB_DOCUMENTOS.IMAGEN"]);
     }
 
     /*** VISTAS PARA PORTAL WORDPRESS ***/
@@ -147,7 +165,13 @@ class VistaController extends Controller {
 
     public function RenderDocumento($iddocumento) {
         $documento = TB\Documento::find( $iddocumento );
-        return view('documento.documento', [ 'documento' => $documento ]);
+        if ($documento) {
+            if (strpos($documento["CONTENIDO"], ".htm") !== false) {
+                $urlDocumento = Wordpress::recurso($documento['CONTENIDO']);
+                return Redirect::to( $urlDocumento );
+            }
+            return view('documento.documento', [ 'documento' => $documento ]);
+        }
 
         //return $documento['CONTENIDO'];
     }

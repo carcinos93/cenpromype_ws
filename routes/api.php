@@ -33,9 +33,11 @@ Route::get('confirmar', [\App\Http\Controllers\PortalController::class, 'confirm
 Route::get('existeUsuario', [\App\Http\Controllers\PortalController::class, 'existeUsuario']);
 
 Route::post('generar-pdf', [\App\Http\Controllers\TBController::class, 'GenerarDocumento' ]); //->middleware(['auditoria']);
+Route::post('cargar-archivos',  'FileUploadController@cargaArchivos' );
+Route::get('archivos-lista',  'FileUploadController@listFiles' );
+Route::get('actualizar-cache-archivos', 'FileUploadController@updateCacheFiles' );
 
-
-Route::get('generar-noticias', 'NoticiasController@CargarNoticias');
+//Route::get('generar-noticias/{id}', 'NoticiasController@CargarNoticias');
 Route::get('lista-noticias', 'NoticiasController@NoticiasAll');
 Route::prefix('usuarios')->middleware(['auditoria'])->group( function () {
      //USUARIOS
@@ -56,7 +58,7 @@ Route::prefix('usuarios')->middleware(['auditoria'])->group( function () {
     Route::get('menuUsuario', [\App\Http\Controllers\LoginController::class, 'MenuUsuario']);
 });
 
-Route::prefix('TB')->group(function () {
+Route::prefix('TB')->middleware(['phpini'])->group(function () {
     #INDICADOR
     Route::get('/indicador','TBController@IndicadorAll');
     Route::post('/indicador','TBController@IndicadorInsert');
@@ -105,70 +107,103 @@ Route::prefix('TB')->group(function () {
         return \App\Models\TB\Menu::find($id);
     });
     Route::post('/menu/roles/{idrol}','CatalogosController@MenuRolInsert');
+    Route::put('/menu/menu-padre/{id}','CatalogosController@UpdateMenuPadre');
 
 
 });
 
-Route::prefix('catalogos')->middleware(['auditoria'])->group(function () {
-    /* PAISES**/
-    Route::get('/paises','CatalogosController@PaisesAll');
-    Route::post('/paises','CatalogosController@PaisesInsert');
-    Route::put('/paises/{id}', 'CatalogosController@PaisesUpdate');
-    Route::delete('/paises/{id}', 'CatalogosController@PaisesDelete');
+Route::prefix('catalogos')->group(function () {
 
-     /**GRUPO INDICADOR**/
-     Route::get('/grupo-indicador', 'CatalogosController@GrupoIndicadorAll');
-     Route::post('/grupo-indicador', 'CatalogosController@GrupoIndicadorInsert');
-     Route::put('/grupo-indicador/{id}', 'CatalogosController@GrupoIndicadorUpdate');
-     Route::delete('/grupo-indicador/{id}', 'CatalogosController@GrupoIndicadorDelete');
+    Route::get('/catalogo/{tipo}/{nivel}', function ($tipo, $nivel) {
 
-     /**GRUPO INDICADOR**/
-     Route::get('/indicador', 'CatalogosController@IndicadorAll');
-     Route::post('/indicador', 'CatalogosController@IndicadorInsert');
-     Route::put('/indicador/{id}', 'CatalogosController@IndicadorUpdate');
-     Route::delete('/indicador/{id}', 'CatalogosController@IndicadorDelete');
+        $catalogos =  \App\Models\Catalogos\Catalogo::where('TIPO_CATALOGO', '=', $tipo)
+        ->where('NIVEL', '=', $nivel);
+        if (request()->exists("padre")) {
+            $catalogos = $catalogos->where('CATALOGO_PADRE', '=', request()->input('padre'));
+        }
 
-    ///DEPARTAMENTOS
-     Route::get('/departamentos', 'CatalogosController@DepartamentosAll');
-     Route::post('/departamentos', 'CatalogosController@DepartamentosInsert');
-     Route::put('/departamentos/{id}', 'CatalogosController@DepartamentosUpdate');
-     Route::delete('/departamentos/{id}', 'CatalogosController@DepartamentosDelete');
+      
+        return $catalogos->get();
+        
+    });
 
-     ///FUENTE DE INFORMACION
-     Route::get('/fuente-informacion', 'CatalogosController@FuentesInformacionAll');
-     Route::post('/fuente-informacion', 'CatalogosController@FuentesInformacionInsert');
-     Route::put('/fuente-informacion/{id}', 'CatalogosController@FuentesInformacionUpdate');
-     Route::delete('/fuente-informacion/{id}', 'CatalogosController@FuentesInformacionDelete');
+    Route::get('/formulario/{id}', function ($id) {
+        return \App\Models\Catalogos\Formulario::with('preguntas')->find($id);
+    });
+
+    Route::get('/formulario/pregunta/{id}', function ($id) {
+        $valor = request()->input('valor');
+        $formulario = \App\Models\Catalogos\Formulario::with('preguntas')
+        ->where('CAMPO_DEPENDE', '=', $id)
+        ->where('VALOR_DEPENDE', '=', $valor)
+        ->first();
+
+        return $formulario ?? [ 'preguntas' => [] ];
+    });
+
+    //Rutas que requieren autorizacion
+    Route::middleware(['auditoria'])->group(function () {
+        /* PAISES**/
+        Route::get('/paises','CatalogosController@PaisesAll');
+        Route::post('/paises','CatalogosController@PaisesInsert');
+        Route::put('/paises/{id}', 'CatalogosController@PaisesUpdate');
+        Route::delete('/paises/{id}', 'CatalogosController@PaisesDelete');
+
+        /**GRUPO INDICADOR**/
+        Route::get('/grupo-indicador', 'CatalogosController@GrupoIndicadorAll');
+        Route::post('/grupo-indicador', 'CatalogosController@GrupoIndicadorInsert');
+        Route::put('/grupo-indicador/{id}', 'CatalogosController@GrupoIndicadorUpdate');
+        Route::delete('/grupo-indicador/{id}', 'CatalogosController@GrupoIndicadorDelete');
+
+        /**GRUPO INDICADOR**/
+        Route::get('/indicador', 'CatalogosController@IndicadorAll');
+        Route::post('/indicador', 'CatalogosController@IndicadorInsert');
+        Route::put('/indicador/{id}', 'CatalogosController@IndicadorUpdate');
+        Route::delete('/indicador/{id}', 'CatalogosController@IndicadorDelete');
+
+        ///DEPARTAMENTOS
+        Route::get('/departamentos', 'CatalogosController@DepartamentosAll');
+        Route::post('/departamentos', 'CatalogosController@DepartamentosInsert');
+        Route::put('/departamentos/{id}', 'CatalogosController@DepartamentosUpdate');
+        Route::delete('/departamentos/{id}', 'CatalogosController@DepartamentosDelete');
+
+        ///FUENTE DE INFORMACION
+        Route::get('/fuente-informacion', 'CatalogosController@FuentesInformacionAll');
+        Route::post('/fuente-informacion', 'CatalogosController@FuentesInformacionInsert');
+        Route::put('/fuente-informacion/{id}', 'CatalogosController@FuentesInformacionUpdate');
+        Route::delete('/fuente-informacion/{id}', 'CatalogosController@FuentesInformacionDelete');
 
 
-     //ACTIVIDADES ECONOMICAS
-     Route::get('/actividades-economicas', 'CatalogosController@ActividadesEconomicasAll');
-     Route::post('/actividades-economicas', 'CatalogosController@ActividadesEconomicasInsert');
-     Route::put('/actividades-economicas/{id}', 'CatalogosController@ActividadesEconomicasUpdate');
-     Route::delete('/actividades-economicas/{id}', 'CatalogosController@ActividadesEconomicasDelete');
+        //ACTIVIDADES ECONOMICAS
+        Route::get('/actividades-economicas', 'CatalogosController@ActividadesEconomicasAll');
+        Route::post('/actividades-economicas', 'CatalogosController@ActividadesEconomicasInsert');
+        Route::put('/actividades-economicas/{id}', 'CatalogosController@ActividadesEconomicasUpdate');
+        Route::delete('/actividades-economicas/{id}', 'CatalogosController@ActividadesEconomicasDelete');
 
-     //TIPO EMPRESAS
-     Route::get('/tipo-empresa', 'CatalogosController@TipoEmpresaAll');
-     Route::post('/tipo-empresa', 'CatalogosController@TipoEmpresaInsert');
-     Route::put('/tipo-empresa/{id}', 'CatalogosController@TipoEmpresaUpdate');
-     Route::delete('/tipo-empresa/{id}', 'CatalogosController@TipoEmpresaDelete');
+        //TIPO EMPRESAS
+        Route::get('/tipo-empresa', 'CatalogosController@TipoEmpresaAll');
+        Route::post('/tipo-empresa', 'CatalogosController@TipoEmpresaInsert');
+        Route::put('/tipo-empresa/{id}', 'CatalogosController@TipoEmpresaUpdate');
+        Route::delete('/tipo-empresa/{id}', 'CatalogosController@TipoEmpresaDelete');
 
-     //SECTORES ECONOMICOS
-     Route::get('/sector-economico', 'CatalogosController@SectorEconomicoAll');
-     Route::post('/sector-economico', 'CatalogosController@SectorEconomicoInsert');
-     Route::put('/sector-economico/{id}', 'CatalogosController@SectorEconomicoUpdate');
-     Route::delete('/sector-economico/{id}', 'CatalogosController@SectorEconomicoDelete');
+        //SECTORES ECONOMICOS
+        Route::get('/sector-economico', 'CatalogosController@SectorEconomicoAll');
+        Route::post('/sector-economico', 'CatalogosController@SectorEconomicoInsert');
+        Route::put('/sector-economico/{id}', 'CatalogosController@SectorEconomicoUpdate');
+        Route::delete('/sector-economico/{id}', 'CatalogosController@SectorEconomicoDelete');
 
-     //REGION
-     Route::get('/region', 'CatalogosController@RegionAll');
-     Route::post('/region', 'CatalogosController@RegionInsert');
-     Route::put('/region/{id}', 'CatalogosController@RegionUpdate');
-     Route::delete('/region/{id}', 'CatalogosController@RegionDelete');
+        //REGION
+        Route::get('/region', 'CatalogosController@RegionAll');
+        Route::post('/region', 'CatalogosController@RegionInsert');
+        Route::put('/region/{id}', 'CatalogosController@RegionUpdate');
+        Route::delete('/region/{id}', 'CatalogosController@RegionDelete');
 
-    Route::get('/servicio', 'CatalogosController@ServicioAll');
-    Route::post('/servicio', 'CatalogosController@ServicioInsert');
-    Route::put('/servicio/{id}', 'CatalogosController@ServicioUpdate');
-    Route::delete('/servicio/{id}', 'CatalogosController@ServicioDelete');
+        Route::get('/servicio', 'CatalogosController@ServicioAll');
+        Route::post('/servicio', 'CatalogosController@ServicioInsert');
+        Route::put('/servicio/{id}', 'CatalogosController@ServicioUpdate');
+        Route::delete('/servicio/{id}', 'CatalogosController@ServicioDelete');
+    });
+    
 });
 
 Route::post('/traducir', 'TraductorController@Traducir');

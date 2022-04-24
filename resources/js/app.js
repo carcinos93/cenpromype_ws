@@ -16,6 +16,7 @@ import Noticias from './portal/pages/Noticias';
 import Informes from './portal/pages/Informes';
 import RotorImagenes from './portal/pages/RotorImagenes';
 import Productos from './portal/pages/Productos';
+import Formulario from './portal/pages/Formulario';
 import { createI18n } from 'vue-i18n';
 import Tooltip from 'primevue/tooltip';
 /*Vue.component('form-control', require('./portal/components/controls/FormControl.vue').default);
@@ -51,6 +52,7 @@ i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
     app.component('rotor-imagenes', RotorImagenes);
     app.component('noticias', Noticias);
     app.component('productos', Productos);
+    app.component('formulario', Formulario);
     app.mount("#app");
 
 });

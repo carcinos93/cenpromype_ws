@@ -3,17 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/routes/web.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/js/app.js</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/js/portal/pages/Productos.vue</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/config/noticias.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/config/googlesearchapi.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/app/Models/Catalogos/Pais.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/app.js</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/routes/api.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/views/sector/sectorNuevo.blade.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/views/sector/sector.blade.php</file>
-            <file>file:/D:/UniServerZ/www/cenpromype_ws/resources/views/sector/sectores.blade.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/routes/api.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/config/filesystems.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Models/TB/Documento.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/TBController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/LoginController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/FileUploadController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/config/sistema.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/CatalogosController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/VistaController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/Controller.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/UsuarioController.php</file>
+            <file>file:/D:/xampp/htdocs/cenpromype_ws/app/Http/Controllers/PortalController.php</file>
         </group>
     </open-files>
 </project-private>

@@ -23,7 +23,7 @@ class TBController extends Controller {
                     ), '', request());
     }
     public function IndicadorInsert(  ) {
-         return $this->insert(Indicador::class, array(
+         return $this->insert(TB\Indicador::class, array(
                     'CODIGO_FUENTE' => 'codigo_fuente',
                     'CODIGO_PAIS' => 'codigo_pais',
                     'CODIGO_INDICADOR' => 'codigo_indicador',
@@ -33,7 +33,7 @@ class TBController extends Controller {
             ), request());
     }
      public function IndicadorUpdate( $id ) {
-         return $this->update(Indicador::class, $id, array(
+         return $this->update(TB\Indicador::class, $id, array(
                     'CODIGO_FUENTE' => 'codigo_fuente',
                     'CODIGO_PAIS' => 'codigo_pais',
                     'CODIGO_INDICADOR' => 'codigo_indicador',
@@ -44,7 +44,7 @@ class TBController extends Controller {
     }
 
     public function IndicadorDelete( $id   ) {
-        return $this->delete( Indicador::class, $id, request() );
+        return $this->delete( TB\Indicador::class, $id, request() );
     }
 
     #PRODUCTOS
@@ -97,6 +97,8 @@ class TBController extends Controller {
             'CODIGO_PRODUCTO' => 'codigo_producto',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
+            'IMAGEN' => 'imagen',
+            "RUTA_DOCUMENTO" => 'documento',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());
@@ -109,6 +111,8 @@ class TBController extends Controller {
             'CODIGO_PRODUCTO' => 'codigo_producto',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
+            'IMAGEN' => 'imagen',
+            "RUTA_DOCUMENTO" => 'documento',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());

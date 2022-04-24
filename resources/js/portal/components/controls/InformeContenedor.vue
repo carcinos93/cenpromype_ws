@@ -1,19 +1,21 @@
 <template>
+
     <div id="informeContenedor" v-show="mostrarInforme">
         <div   class="bg-white contendor-iframe">
             <div class="p-d-block p-mt-5" >
                 <div class="p-grid p-jc-end pointer-click">
-                    <div class="p-col-6 p-md-2">
+                    <div id="informe-ruta" class="p-col-6 p-md-9 p-lg-10 p-pl-5"></div>
+                    <div class="p-col-6 p-md-3 p-lg-2">
                         <div class="p-grid">
                             <div class="p-col">
                                 <i  v-bind:class="[ 'pi', 'pi-file-pdf', { 'p-disabled' : urlPdf == '' }  ]"  @click="informePDF"></i>
                             </div>
                             <div class="p-col">
-                                <i class="pi pi-print"></i>
+                                <i class="pi pi-print" v-on:click="imprimir"></i>
                             </div>
-                            <div class="p-col">
+                            <!--<div class="p-col">
                                 <i class="pi pi-envelope"></i>
-                            </div>
+                            </div>-->
                             <div class="p-col">
                                 <i class="pi pi-arrow-circle-left ejecutar-evento" id="regresarBtn" @click="regresar"></i>
                             </div>
@@ -22,7 +24,7 @@
 
                 </div>
             </div>
-            <iframe id="frameDocumento" frameborder="0" v-on:load="cargarDocumento" v-bind:style="{ height: alturaDocumento }" v-bind:src="urlInforme"></iframe>
+            <iframe id="frameDocumento"  frameborder="0" v-on:load="cargarDocumento" v-bind:style="{ height: alturaDocumento }" v-bind:src="urlInforme"></iframe>
         </div>
     </div>
    
@@ -53,11 +55,20 @@ export default {
         }
     },
     methods: {
+        imprimir() {
+            const iframe = document.getElementById("frameDocumento");
+            if (iframe.contentWindow) {
+                iframe.contentWindow.print();
+            }
+           
+        },
         regresar() {
             this.alturaDocumento = '0px';
             this.urlInforme = '';
             this.$emit('regresar');
             this.mostrarInforme = false;
+            /** se mueve la barra de navegación al contenedor principal */
+
         },
         informePDF() {
             if (this.urlPdf != '' && this.urlPdf)
@@ -76,7 +87,13 @@ export default {
                     if (window.jQuery)  {
                         let domDocumento = window.jQuery("#frameDocumento");    
                         let altura = domDocumento.contents().height() + 35;
-                        this.alturaDocumento = `${altura}px`;
+                         this.alturaDocumento = `75vh`;
+                        /*if (this.urlInforme.includes(".htm")) {
+                             this.alturaDocumento = `75vh`;
+                        } else {
+                                this.alturaDocumento = `${altura}px`;
+                        }*/
+                      
             
                         if (window.swal) { window.swal.close() };
                     } else {

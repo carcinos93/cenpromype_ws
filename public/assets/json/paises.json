@@ -1,5 +1,4 @@
-{
-  "countries": [
+[
     {
       "name_en": "Afghanistan",
       "name_es": "Afganistán",
@@ -1453,4 +1452,3 @@
       "code": "AX"
     }
   ]
-}

@@ -304,14 +304,22 @@ class CatalogosController extends Controller
 
 
     /*MENU*/
+    public function UpdateMenuPadre($id) {
+        
+       return $this->update(TB\Menu::class, $id, ['ID_MENU_PADRE' => 'MENU_PADRE' ], request());
+
+
+    }
     public function MenuAll() {
         $data = [];
-        $menu = TB\Menu::selectRaw( DB::raw("CODIGO_MENU AS id,ETIQUETA as label, DESCRIPCION as data,'pi pi-folder-open' expandedIcon, 'pi pi-folder' as collapsedIcon, true as expanded"))
+        $menu = TB\Menu::selectRaw( DB::raw("CODIGO_MENU AS id,ETIQUETA as label,1 as is_group,0 as draggable, 0 as droppable , ETIQUETA as data,'pi pi-folder-open' expandedIcon, 'pi pi-folder' as collapsedIcon, true as expanded"))
             ->where('ID_MENU_PADRE', '=', 0)
             ->get();
         foreach ( $menu as $value ) {
-            $value['children'] = TB\Menu::selectRaw( DB::raw("CODIGO_MENU as id,ETIQUETA as label, DESCRIPCION as data,'fa fa-file-o' expandedIcon, 'fa fa-file-o' as collapsedIcon"))
-                ->where('ID_MENU_PADRE', '=',  $value['id'] )->get();
+            $value['children'] = TB\Menu::selectRaw( DB::raw("CODIGO_MENU as id, 0 as is_group , 0 as droppable,ETIQUETA as label, ETIQUETA as data,'fa fa-file-o' expandedIcon, 'fa fa-file-o' as collapsedIcon"))
+                ->where('ID_MENU_PADRE', '=',  $value['id'] )
+                ->orderBy("DESCRIPCION", "ASC")
+                ->get();
             array_push( $data, $value );
         }
 

@@ -3,19 +3,30 @@
     #listaProductos svg text, #listaProductos svg span { font-family: inherit !important; font-size: 0.85rem; color:black }
     #listaProductos svg { width: 100%; height:100%}
     #listaProductos svg path[id*="linea"] { stroke-width: 4px;}
+    #listaProductos svg foreignObject, #listaProductos svg foreignObject span { line-height: 1rem !important }
     #navegacionRutaContenedor { max-width:1140px; margin: 0 auto; }
 </style>
-<div class="elementor-container p-mt-4" id="navegacionRutaContenedor">
+<div class="elementor-container" id="navegacionRutaContenedor">
     <div id="navegacion-ruta" class="p-text-uppercase"></div> 
 </div>
-<div class="elementor-container" id="app">
+<div class="elementor-container sector-contenedor" id="app">
     <div class="p-grid p-jc-center">
         <div  class="p-col-12">
             <div id="navegacion-ruta" class="p-text-uppercase"></div> 
         </div>
         <div class="p-col-12 p-text-center" >
             <rotor-imagenes :tiempo="5000" :deshabilitar-botones="true" imagenes="{{ $sector->BANNER }}" 
-                urlbase="{{ Wordpress::index() }}"></rotor-imagenes>
+                urlbase="{{ Wordpress::index() }}">
+                <template v-slot:texto="{ data }">
+                    <div v-if="data.texto != ''" style="position: absolute;color: rgb(70, 70, 70);width: 100%;font-size: 1.5rem;font-weight: bold;height: 100%;">
+                        <div style="height: 100%;text-align: center;" class="p-d-flex">
+                            <div style="width: 82%;" class="p-d-flex p-p-4 p-as-center p-m-auto p-text-justify">
+                                 <span style="line-height: normal !important" v-html="data.texto"></span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </rotor-imagenes>
             <!--<img src="{{ Wordpress::recurso( $sector->BANNER )  }}" class="img-fluid"  />-->
         </div>
         <div class="p-col-12 p-m-t-5" id="sector-descripcion">
@@ -54,7 +65,7 @@
         </div>
         <div class="col no-gutter p-col-12">
             <div class="p-col-12">
-                <productos svg="{{ Wordpress::uploads('imagenes/listaProductos.svg?v1.1') }}"
+                <productos svg="{{ Wordpress::uploads('imagenes/listaProductos.svg?v1.2') }}"
                 data-source="{{ route('api.vista.productos', ['sector' => $idsector ])}}"
                 loading='{{ Wordpress::uploads("js/load.gif") }}'
                 idsector="{{ $idsector }}"
@@ -69,7 +80,7 @@
 <script>
 
     jQuery(function () {
-        $("#primary").prepend( $("#navegacionRutaContenedor") );
+        jQuery("#primary").prepend( $("#navegacionRutaContenedor") );
 
 
          var idSector = "{{ $idsector }}";
@@ -79,10 +90,13 @@
                 scrollTop: jQuery("#sector-descripcion").offset().top - 120
             });
         
+           /// 
             jQuery("#navegacion-ruta").breadcrumb({
+            activeItemClass: 'color-naranja',
+            inactiveItemClass: 'color-azul',
             items: [
                 { label: "INICIO", url: '{{ Wordpress::url("sectores") }}', cssClass: "color-azul", "id": "bread-inicio" },
-                { label: "{{ $sector->SECTOR_ECONOMICO }}", cssClass: "color-naranja", "id" : "bread-sector" }
+                { label: "{{ $sector->SECTOR_ECONOMICO }}", cssClass: "color-azul", "id" : "bread-sector" }
             ]
         });
         
@@ -97,7 +111,11 @@
 
         });
     });
-
+    function scrollLocal(elem) {
+        jQuery("html, body").animate({
+            scrollTop: jQuery(elem).offset().top - jQuery("div.elementor[data-elementor-type='header']").height()
+        });
+    }
     function cargarServicios(url) {
         cargando('');
         /**

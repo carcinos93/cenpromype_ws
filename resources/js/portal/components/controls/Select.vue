@@ -13,6 +13,7 @@ export default {
         inlineFunc: { default: ""  } , 
         cssclass: { default: "" }, 
         items: { default: [] }, 
+        params: {  default: {} },
         datasource: { default: "" },
         descripcionCampo: { default: "descripcion" }, 
         valorCampo: {default: "id"},
@@ -33,11 +34,11 @@ export default {
         handleInput() {
              this.$emit('input', this.selectedItem);
         },
-        cargarDatos(datasource) {
+        cargarDatos(datasource, params) {
         this.cargando = true;
         if (datasource != "") {
             axios
-                .get(this.urlBase + datasource)
+                .get(this.urlBase + datasource, {  params: params })
                 .then(response => {
                     let ob = {};
                         ob[ this.valor ] = 0;
@@ -63,15 +64,19 @@ export default {
     },
     watch: {
         datasource(v) {
-            this.cargarDatos(v);
+            this.cargarDatos(v, this.params);
+            console.log(this.datasource);
         }, 
-        items(v) {
+        params(v) {
+            this.cargarDatos( this.datasource, v  );
+        },
+        items(v) {                
             this.itemsData = v ?? [];
         }
     },
     mounted() {
-        this.cargarDatos(this.datasource);
-
+        this.cargarDatos(this.datasource, this.params);
+        console.log(this.datasource);
     },
     setup() {
         return { $t: useI18n() }

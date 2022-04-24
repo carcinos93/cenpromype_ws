@@ -213,6 +213,7 @@ class Controller extends BaseController
    public function update($klass, $keyValue, array $updateColumns, Request $request, array $opts = []) {
           $dataUpdate = [];
           $__id = $request->input('__id');
+          $returnData = [];
        try {
             foreach ($updateColumns as $key => $value) {
              //var_dump();
@@ -227,6 +228,7 @@ class Controller extends BaseController
 
            if ($request->hasFile( $value . "_file" )) {
                $this->uploadFiles( $dataUpdate,$key, $request->file($value . "_file"), $opts, $__id );
+               $returnData[$key] = $dataUpdate[$key];
            }
 
         }
@@ -234,7 +236,7 @@ class Controller extends BaseController
             if ($validacionDuplicados['valid']) {
                 $updated = $klass::where( $klass::KEY , '=',$keyValue)->update($dataUpdate);
                 if ($updated) {
-                    return ['success' => true, 'message' => 'Registro actualizado', 'validacion' => $validacionDuplicados];
+                    return ['success' => true, 'message' => 'Registro actualizado', 'data' => $returnData , 'validacion' => $validacionDuplicados,];
                 } else {
                     return ['success' => false, 'message' => 'El registro no se actualizo'];
                 }
@@ -333,6 +335,7 @@ class Controller extends BaseController
      */
    public function uploadFiles(&$data, $key ,$file, array $opts = [] , $__id = null ) {
        try {
+           
            $ruta = config('sistema.uploads.path');
            if (array_key_exists('folderUpload', $opts)) {
                $ruta = $opts['folderUpload'];
@@ -343,7 +346,7 @@ class Controller extends BaseController
            $archivo = "$ruta/$nombreArchivo";
            $data[$key] ="./$archivo";
            Storage::disk( config('sistema.uploads.storage') )->put($archivo, $file->get() );
-           return [ "status" => "ok" ];
+           return [ "status" => "ok"  ];
        } catch  (\Exception $ex) {
             $this->log( $ex );
            return ["status" => false, "message" => "Falla en la carga de imagen"];
@@ -351,7 +354,7 @@ class Controller extends BaseController
        }
 
    }
-
+  
    protected function respuesta( $success, $message, $extra = [] ) {
        $resp = [];
        $resp['success'] = $success;

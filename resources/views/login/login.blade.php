@@ -14,8 +14,9 @@
 </style>
 <div id="app">
   
-        <formulario-registro :codigo-empresa="7">
+        <formulario :id-formulario="1"></formulario>
+        <!--<formulario-registro :codigo-empresa="7">
             
-        </formulario-registro>
+        </formulario-registro>-->
 </div>
 @endsection()

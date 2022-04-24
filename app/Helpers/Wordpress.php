@@ -12,6 +12,6 @@ class Wordpress {
     }
     
     public static function uploads( $ruta ) {
-        return config("wordpress.url.sitio") . "/" . config("wordpress.url.uplodas") . "/" . $ruta;
+        return config("wordpress.url.sitio") . config("wordpress.url.uplodas") . "/" . $ruta;
     }
 }

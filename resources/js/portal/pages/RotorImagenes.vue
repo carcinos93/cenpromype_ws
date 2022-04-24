@@ -1,7 +1,8 @@
 <template>
     <carousel v-bind:class="{ noBotones: deshabilitarBotones }" :autoplayInterval="tiempo" :value="imagenesArr" :numVisible="1" :numScroll="1" >
         <template #item="slotProps">
-            <div style="width: 100%">
+            <div style="width: 100%" class="p-relative">
+                <slot name="texto" :data="slotProps.data"></slot>
                 <img :src="urlbase + slotProps.data.imagen" style="max-width: 100%; width:100%; height: auto">
             </div>
         </template>
@@ -23,7 +24,7 @@ export default {
             if (this.$slots.imagenes) {
                let elementos =  this.$slots.imagenes()[0].children ?? [];
                 this.imagenesArr = elementos.map((v, i) => {
-                    return { imagen:  v.children.trim()  }
+                    return { imagen:  v.children.trim(), texto: ''  }
                 })
                 
             }
@@ -36,7 +37,7 @@ export default {
         } catch (error) {
             //en el caso que no sea un array string
             this.imagenesArr = this.imagenes.split(",").map( (v, i) => { 
-                return { imagen: v.trim() };
+                return { imagen: v.trim(), texto: '' };
             } );
         }
     },

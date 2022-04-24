@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'auditoria' => \App\Http\Middleware\AuditoriaVisitante::class
+        'auditoria' => \App\Http\Middleware\AuditoriaVisitante::class,
+        'phpini' => \App\Http\Middleware\PHPIniMiddlerware::class
     ];
 }

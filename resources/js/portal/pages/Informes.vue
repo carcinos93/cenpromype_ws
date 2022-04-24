@@ -1,7 +1,19 @@
 <template>
     <div class="p-grid" v-show="!mostrarInforme">
         <div :class="cssClassMenu">
-            <panel-menu :model="menu" />
+            <panel-menu :model="menu">
+                <!--<template  v-slot:item="{ item }">
+
+
+                        <span> {{ item.label }}  </span>
+                        <template v-if="item.dataItem.TOTAL_DOCUMENTOS != undefined">
+                            <br/>
+                            <span v-if="item.dataItem.TOTAL_DOCUMENTOS == 0"> (Próximamente) </span>
+                        </template>    
+
+                </template>-->
+         
+            </panel-menu>
             <template v-if="cargandoMenu">
                <skeleton class="mb-2"></skeleton>
                     <skeleton width="100%" class="p-mb-2"></skeleton>
@@ -100,13 +112,13 @@ export default {
             this.urlInforme = '';*/
             this.urlInforme = "";
             this.urlPdf = "";
-            if (window.jQuery) {
-                window.jQuery("#content #primary").removeClass("p-hidden");
-            }
+            window.jQuery("#content #primary").removeClass("p-hidden");
 
         },
         verInforme(informe) {
                 /** Este informe no usa Axios */
+                
+           
                 this.urlInforme = `${this.urlapi}vistas/documento/${informe.CODIGO_DOCUMENTO}`;
                 if (informe.RUTA_DOCUMENTO  && informe.RUTA_DOCUMENTO != '')
                 {
@@ -114,7 +126,8 @@ export default {
                 } else {
                     this.urlPdf = '';
                 }
-              
+                
+               
                 //window.cargando();
 
         },
@@ -143,6 +156,7 @@ export default {
             this.menu = (await apiPortal.get(sectoresApi).finally(_ => { this.cargandoMenu = false; window.swal.close(); })).data.map((v, i) => {
                 return {
                     label: v.SECTOR_ECONOMICO,
+                    dataItem: v,
                     command: () => {
                         this.seleccionarSector(i, v.CODIGO_SECTOR);
                     },
@@ -160,6 +174,7 @@ export default {
                     ).map((v, indiceProducto) => {
                         return {
                             label: v.NOMBRE_PRODUCTO,
+                            dataItem: v,
                             command: () => {
                                 this.seleccionarProducto(
                                     indiceProducto,
@@ -200,11 +215,13 @@ export default {
                         )
                     ).map((v, i) => {
                         return {
-                            label: v.NOMBRE_SERVICIO,
+                            label: `${v.NOMBRE_SERVICIO} ${v.TOTAL_DOCUMENTOS == 0 ? "(Próximamente)" : ""} `,
+                            dataItem: v,
+                            escape: true,
                             command: () => {
                                 this.cargarInformes(
-                                    codigoProducto,
-                                    v.CODIGO_SERVICIO
+                                    v.CODIGO_SERVICIO,
+                                    codigoProducto
                                 );
                             },
                         };

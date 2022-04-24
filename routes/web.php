@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\NoticiasConsulta;
 use App\Models\Catalogos\SectorEconomico;
 use Illuminate\Support\Facades\Route;
 /*
@@ -17,6 +18,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return abort(404, 'No autorizado');
+});
+
+
+Route::get('job', function (){
+    for ($i = 1, $total = 10; $i <= $total; $i++)
+    {
+        $job = (new NoticiasConsulta( $i ))->delay(60 * $i);
+        dispatch($job);
+    }
+    //$job = (new NoticiasConsulta())->delay()
+
+    return "listo";
 });
 
 Route::get('/inicio', function () {

@@ -1,6 +1,7 @@
 <template>
+ 
     <div class="p-grid p-jc-end">
-        <div class="p-col-9">
+        <div class="p-col-9 p-hidden">
             <div class="p-fluid p-formgrid p-grid p-text-center">
                 <div class="p-col-12 p-col-md p-field">
             
@@ -30,29 +31,32 @@
             <h2>¿QUÉ DESEAS BUSCAR?</h2>
         </div>
         <div class="p-col-12">
-            <div class="p-grid p-w-100 p-shadow-7 bg-white">
+            <div class="p-grid p-w-100 p-shadow-7 bg-white p-jc-center" id="servicios-lista">
                 <servicios
-                    @onClick="onClickServicio(item, event)"
+                    @onclickitem="onClickServicio($event)"
                     :url="servicioUrl"
-                    css-class-lista="p-col-12 p-md-4 p-pt-0">
+                    css-class-lista="p-col-6 p-md-4 p-pt-0">
                     <template v-slot:default="slot">
                         <div class="p-text-center">
-                            <a :class="[slot.isActive ? 'bg-naranja p-text-white': '', 'elementor-icon navegar-servicio p-border-2 p-shadow-7 p-pt-2 p-pt-lg-4']" href="javascript:void(0)">
-                                <div class="p-mb-3 p-mr-5 p-ml-5 p-text-center">
+                            <a style="text-decoration:none !important;width:60%;height:100%" :class="[slot.isActive ? 'bg-naranja p-text-white': '', 'elementor-icon navegar-servicio p-border-2 p-shadow-7 p-pt-2 p-pt-lg-1']" href="javascript:void(0)">
+                                <div class="p-pl-5 p-pr-5 p-pb-3 p-pt-3 p-text-center">
                                     <img
                                         :src="urlBase + slot.item.LOGO"
-                                        style="max-width: 100%; height: auto"
+                                        style="width: 100%; height: auto"
                                     />
                                 </div>
-                                <div class="p-d-block">
-                                    <div style="
-                                            font-size: 1.4rem;
+                                <div class="p-d-block p-mr-2 p-ml-2">
+                                    <div style="font-size: 1.4rem;
                                             line-height: 1.5rem;
                                             display: inline-table;">
-                                        <div style="display: table-caption">
+                                        <!-- 
+                                            -->
+                                        <div style="display: table-caption" class="p-text-center">
+                                            <!-- display: table-caption -->
                                             <span class="p-text-bold">
                                                 {{ slot.item.NOMBRE_SERVICIO }}
                                             </span>
+                                           <span v-if="slot.item.TOTAL_DOCUMENTOS == 0"> <small> (Próximamente) </small> </span>
                                         </div>
                                     </div>
                                 </div>
@@ -63,9 +67,9 @@
             </div>
         </div>
         <div class="p-col-12">
-
-             <servicios
-                    @onClick="onClickInformes(item, event)"
+            <div class="p-grid p-jc-center" id="informes-lista">
+            <servicios
+                    @onclickitem="onClickInformes($event)"
                     :url="informesApiUrl"
                     css-class-lista="p-col-4">
                     <template v-slot:default="slot">
@@ -76,11 +80,12 @@
                         </div>
                         <div class="p-card-body">
                         <div class="p-card-title color-naranja">
-                              {{ slot.item.CODIGO_DOCUMENTO }}
+                              INFORME N°{{ slot.item.CODIGO_DOCUMENTO }}
                            </div>
                         <div class="p-card-content p-text-white">
 
-                            {{ slot.item.DESCRIPCION_DOCUMENTO }}
+                            <span>{{ slot.item.DESCRIPCION_DOCUMENTO }}</span> 
+                          
                        </div>
                        <div class="p-card-footer p-text-white">
                            <span class="p-p-2" style="background-color: #f38a1e">Ver mas</span>
@@ -90,13 +95,16 @@
                     </div>
                     </template>
                 </servicios>
-
-                
+            </div>
+        
         </div>
         <!--
             v-on:afterLoad="afterLoadInforme" 
                 v-on:regresar="regresarInforme" 
          -->
+      
+    </div>
+      <div class="p-grid">
         <div class="p-col-12">
             <informe-contenedor :url-pdf="informe.pdf"  v-on:regresar="regresarInforme"  :url="informe.html" elemento-to=".ast-container" />
         </div>
@@ -127,20 +135,55 @@ export default {
             servicioUrl: "",
             informesApiUrl: "",
             codigoProducto: 0,
-            informe: { pdf: "", html: "" }
+            informe: { pdf: "", html: "" },
+            informeActivo: false
         };
     },
     methods: {
         onClickServicio(item) {
-            this.informesApiUrl = `api/informes/${this.codigoProducto}/${item.CODIGO_SERVICIO}`;
+            //if (item.TOTAL_DOCUMENTOS == 0) { return; } 
+            this.informesApiUrl = `api/vista/informes/${this.codigoProducto}/${item.CODIGO_SERVICIO}`;
+            if (window.scrollLocal) {
+                window.scrollLocal("#informes-lista");
+            }
         },
 
         onClickInformes(item) {
-            this.informe = { html: `vistas/documento/${item.CODIGO_DOCUMENTO}`, pdf: `${this.urlBase}${item.RUTA_DOCUMENTO}`  };
-            console.log(this.informe);
-        },
+
+            this.informe = { html: `${window['url_api']}vistas/documento/${item.CODIGO_DOCUMENTO}`, pdf: `${this.urlBase}${item.RUTA_DOCUMENTO}`  };
+            this.informeActivo = true;
+
+			if (window.jQuery) {
+                     window.jQuery("#navegacion-ruta").data('breadcrumb').addItem({
+                            label: `INFORME N° ${item.CODIGO_DOCUMENTO}`,
+                            id: 'informe'
+                    });
+                    window.jQuery("#informe-ruta").prepend( window.jQuery("#navegacionRutaContenedor") );
+			}
+
+            this.ocultarContedor();
+        },  
         regresarInforme() {
             this.informe = {  pdf : "", html : "" };
+            this.informeActivo = false;
+
+              if (window.jQuery) {
+                window.jQuery("#primary").prepend( window.jQuery("#navegacionRutaContenedor") );
+                window.jQuery("#navegacion-ruta").data('breadcrumb').remove("#informe");
+            }
+
+            this.ocultarContedor();
+             if (window.scrollLocal) {
+                window.scrollLocal("#informes-lista");
+            }
+           
+        },
+        ocultarContedor() {
+            if (this.informeActivo) {
+                window.jQuery("#primary").addClass("p-hidden");
+            } else {
+                 window.jQuery("#primary").removeClass("p-hidden");
+            }
         }
     },
     mounted() {
@@ -177,6 +220,9 @@ export default {
         propiedades.onClickItem = function (event, data) {
             $this.servicioUrl = `api/vista/servicios/${data.CODIGO_PRODUCTO}`;
             $this.codigoProducto = data.CODIGO_PRODUCTO;
+            if (window.scrollLocal) {
+                window.scrollLocal("#servicios-lista");
+            }
         };
         window.jQuery("#listaProductos").carusel(propiedades);
     },
@@ -184,6 +230,7 @@ export default {
 </script>
 
 <style>
+
 .p-dropdown-trigger {
     background-color: #144a6d !important ;
 }
