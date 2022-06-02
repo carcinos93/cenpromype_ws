@@ -25,7 +25,7 @@ class UsuarioController extends Controller {
          }
          
          if (!empty( $d )) {
-             return $this->respuesta(fase, implode(", ", $d));
+             return $this->respuesta(false, implode(", ", $d));
          }
          
          return $this->insert(\App\Models\Usuarios\Usuario::class, array(
@@ -68,13 +68,13 @@ class UsuarioController extends Controller {
     public function RolInsert(  ) {
          return $this->insert(\App\Models\Usuarios\Rol::class, array(
                 'NOMBRE_ROL' => 'nombre',
-                'ESTADO' => 'estado'
+                'ESTADO' => 'estatus'
             ), request());
     }
      public function RolUpdate( $id ) {
          return $this->update(\App\Models\Usuarios\Rol::class, $id, array(
                 'NOMBRE_ROL' => 'nombre',
-                'ESTADO' => 'estado'
+                'ESTADO' => 'estatus'
             ), request());
     }
 

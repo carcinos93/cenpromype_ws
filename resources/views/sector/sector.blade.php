@@ -1,101 +1,126 @@
+
 <style>
-    .p-dropdown{display:inline-flex;cursor:pointer;position:relative;-webkit-user-select:none;-ms-user-select:none;user-select:none}.p-dropdown-clear-icon{position:absolute;top:50%;margin-top:-.5rem}.p-dropdown-trigger{display:flex;align-items:center;justify-content:center;flex-shrink:0}.p-dropdown-label{display:block;white-space:nowrap;overflow:hidden;flex:1 1 auto;width:1%;text-overflow:ellipsis;cursor:pointer}.p-dropdown-label-empty{overflow:hidden;visibility:hidden}input.p-dropdown-label{cursor:default}.p-dropdown .p-dropdown-panel{min-width:100%}.p-dropdown-panel{position:absolute;top:0;left:0}.p-dropdown-items-wrapper{overflow:auto}.p-dropdown-item{cursor:pointer;font-weight:normal;white-space:nowrap;position:relative;overflow:hidden}.p-dropdown-items{margin:0;padding:0;list-style-type:none}.p-dropdown-filter{width:100%}.p-dropdown-filter-container{position:relative}.p-dropdown-filter-icon{position:absolute;top:50%;margin-top:-.5rem}.p-fluid .p-dropdown{display:flex}.p-fluid .p-dropdown .p-dropdown-label{width:1%}
-    .contenedor-dinamico .elemento-contenedor:hover {
-        background-color: rgba(241, 138, 0, 1);
-        transform: scale(1.4,1.4);
-    }
-    .elemento-contenedor {  border-radius: 5px; }
-
-    .p-w-100 { width: 100% !important;  }
-    .color-azul {  color: #135fa7 !important; }
-    .p-dropdown {  border: 1px solid #135fa7;  }
-    .border-blue {  border: 1px solid #135fa7;  }
-    .p-text-white { color: white !important;  }
-    .bg-azul {  background-color: #135fa7 !important; }
-    .pi-2x { font-size: 2rem; }
-    .pi-1_5x { font-size: 1.5rem; }
-    .btn-dinamico {
-        border: 1px solid #135fa7;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        cursor: pointer;
-        color: white;
-        border-radius: 5px;
-    }
-    .btn-2 {  background-color: rgba(241, 138, 0, 1);  }
-    .p-button { color: #fff !important; /*padding: 15px 32px; !important;*/  }
-    .p-position-absolute { position: absolute; }
-    .p-position-relative { position: relative; }
-    .bg-white { background-color: #ffffff
-    }
-    /*.p-input-icon-left > .p-inputtext { padding-left: 2rem;  }
-    .p-input-icon-right > .p-inputtext { padding-right: 2rem;  }*/
-    .contenedor-dinamico .elementor-icon { border:none !important; }
-    @media (min-width: 768px) {
-        .p-col-md { max-width: 100%; flex-basis: 0; flex-grow: 1; }
-    }
-
+    #listaProductos svg text, #listaProductos svg span { font-family: inherit !important; font-size: 0.85rem; color:black }
+    #listaProductos svg { width: 100%; height:100%}
+    #listaProductos svg path[id*="linea"] { stroke-width: 4px;}
+    #navegacionRutaContenedor { max-width:1140px; margin: 0 auto; }
 </style>
-<div class="elementor-container contenedor-dinamico">
+<div class="elementor-container p-mt-4" id="navegacionRutaContenedor">
+    <div id="navegacion-ruta" class="p-text-uppercase"></div> 
+</div>
+<div class="elementor-container">
     <div class="p-grid p-jc-center">
-        <div class="no-gutter p-col-10 p-shadow-7 bg-white">
-            <div class="p-grid p-ml-5 p-mr-5">
-                @foreach( $sectores as $sector )
-                    <div class="p-col-md p-col-12 p-text-center">
-                            <div class="p-m-auto">
-                                <div class="elementor-animation-bounce-in elemento-contenedor elementor-icon-wrapper p-text-center p-mt-3 p-mb-3 p-mr-1 p-ml-1">
-                                    <a  class="navegar-elemento" data-url="{{ route('vista.productos', ['sector' => $sector['CODIGO_SECTOR']]) }}" href="javascript:void(0)">
-                                        <img src="{{ $url }}/{{  $sector['LOGO'] }}?v3.1"  class="p-col-4 p-md-9" style="height: auto"  />
-                                    </a>
-                                    <div class="p-d-block">
-                                        <div style="font-size: 1.4rem;line-height: 1.5rem;display: inline-table">
-                                            <div style="display: table-caption">
-                                                <span class="p-text-bold">  {{ $sector['SECTOR_ECONOMICO'] }}  </span>
-                                            </div>
+        <div  class="p-col-12">
+            <div id="navegacion-ruta" class="p-text-uppercase"></div> 
+        </div>
+        <div class="p-col-12 p-text-center" id="app">
+            <rotor-imagenes :tiempo="5000" :deshabilitar-botones="true" imagenes="{{ $sector->BANNER }}" 
+                urlbase="{{ Wordpress::index() }}"></rotor-imagenes>
+            <!--<img src="{{ Wordpress::recurso( $sector->BANNER )  }}" class="img-fluid"  />-->
+        </div>
+        <div class="p-col-12 p-m-t-5" id="sector-descripcion">
+            <h2 class="elementor-heading-title elementor-size-default p-text-justify" >
 
-                                        </div>
-                                    </div>
-
-                                </div>
+                {{ $sector->DESCRIPCION }}
+            </h2>
+            <div class="p-grid p-jc-end">
+                <div class="p-col-12 p-md-9">
+                    <div class="p-fluid p-formgrid p-grid p-text-center">
+                        <div class="p-col-12 p-col-md p-field">
+                            <div class="p-inputgroup border-blue">
+                                <input type="text" placeholder="Buscar" class="color-azul p-pb-2 p-pt-2 p-col-md p-col-11" />
+                                <span class="p-inputgroup-addon bg-azul p-text-white">
+                                    <i class="pi pi-search"></i>
+                                </span>
                             </div>
+
+                        </div>
+                        <div class="p-col-12 p-col-md p-field">
+                            <div class="ng-tns-c49-13 p-dropdown p-component p-dropdown-open p-dropdown-clearable">
+                                <div class="p-hidden-accessible ng-tns-c49-13"><input type="text" readonly="" aria-haspopup="listbox" role="listbox"  placeholder="" aria-activedescendant="p-highlighted-option" aria-expanded="true" data-tskb-is-on="vrai"></div>
+                                <!----><span class="ng-tns-c49-13 p-dropdown-label p-col-md p-pb-1 p-pt-1 p-col-12 p-inputtext p-placeholder ng-star-inserted color-blue">Selecciona una opción</span><!----><!----><!---->
+                                <div role="button" aria-haspopup="listbox" class="p-dropdown-trigger bg-azul" aria-expanded="true"><span class="p-dropdown-trigger-icon ng-tns-c49-13 pi pi-caret-down p-text-white"></span></div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-col-md p-field">
+                            <div class="btn-dinamico btn-2 p-d-flex p-text-center">
+                                <span class="p-w-100" > Recursos gratuitos  </span>
+                            </div>
+                            <!--<button id="recursos"  > </button>-->
+                        </div>
                     </div>
-                @endforeach
+                </div>
             </div>
+
+        </div>
+        <div class="col no-gutter p-col-12">
+            <div class="p-col-12" id="listaProductos">
+                
+            </div>
+          
         </div>
 
     </div>
-
 </div>
-<div class="elementor-container p-mt-4">
-    <div class="p-grid p-jc-center">
-        <div class="p-col-12 p-md-10">
-            <div id="root2"></div>
-        </div>
-    </div>
-
-</div>
-
 <script>
 
-    $(function () {
-        $(".navegar-elemento").each(function (e) {
+    jQuery(function () {
+        $("#primary").prepend( $("#navegacionRutaContenedor") );
 
-            const elem = $(this);
+
+         var idSector = "{{ $idsector }}";
+	 //var filtros = [{"value":idSector,"col":"CODIGO_PAIS","op":"eq"}];		
+        jQuery("#listaProductos").carusel({
+            svg: '{{ Wordpress::uploads("imagenes/listaProductos.svg?v1.1") }}',
+            dataSource: {
+                url: window.url_laravel + "api/vista/productos/" + idSector
+            },
+            noSelectColor: "#173051ff",
+            selectColor: "#F8911A",
+			loading: '{{ Wordpress::uploads("js/load.gif") }}',
+            rows: 5,
+            width: 45,
+            height:45,
+            urlBase: "{{Wordpress::index()}}",
+            onClickItem: function(event, data) {
+                
+                cargarServicios( window.url_laravel + "vistas/servicios/"  + data.CODIGO_PRODUCTO  + "/" + idSector );
+               
+            }
+        });
+        jQuery("html, body").delay(3000).animate({
+                scrollTop: jQuery("#sector-descripcion").offset().top - 120
+            });
+        
+            jQuery("#navegacion-ruta").breadcrumb({
+            items: [
+                { label: "INICIO", url: '{{ Wordpress::url("sectores") }}', cssClass: "color-azul", "id": "bread-inicio" },
+                { label: "{{ $sector->SECTOR_ECONOMICO }}", cssClass: "color-naranja", "id" : "bread-sector" }
+            ]
+        });
+        
+        jQuery(".navegar-producto").each(function (e) {
+
+            const elem = jQuery(this);
             elem.on('click', function () {
                 const url = elem.attr("data-url");
-                cargarProductos(url);
+                cargarServicios(url);
+
             });
 
         });
     });
 
-    function cargarProductos(url) {
-        cargando('')
-        $("#root2").load(url ,function(){
+    function cargarServicios(url) {
+        cargando('');
+        /**
+         * root2 esta definido en la ls
+         * */
+         jQuery("#root2").load(url, function () {
+            jQuery("html, body").animate({
+                scrollTop: jQuery("#root2").offset().top
+            });
             swal.close();
         });
     }
 </script>
-
-
-

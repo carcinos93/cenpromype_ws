@@ -12,7 +12,7 @@ class Indicador extends BaseModel
     protected $fillable = ['CODIGO_PAIS', 'CODIGO_INDICADOR', 'ANIO', 'VALOR1', 'VALOR2','FECHA_ADICION', 'USUARIO_ADICION'];
     const CREATED_AT = 'FECHA_ADICION';
     const UPDATED_AT = 'FECHA_MODIFICACION';
-    const KEY = 'CODIGO_FUENTE';
+    const KEY = 'CODIGO_TB_INDICADORES';
 
     /*public function pais() {
         return $this->hasOne('\App\Models\Catalogos\Pais', '');

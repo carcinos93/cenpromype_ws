@@ -171,7 +171,10 @@ class Controller extends BaseController
         try {
 
             foreach ($insertColumns as $key => $value) {
-                $dataInsert[ $key ] = $request->input(  $value );
+                if ($request->has( $value )) {
+                    $dataInsert[ $key ] = $request->input(  $value );
+                }
+
 
                 if ($request->hasFile( $value . "_file" )) {
                     $this->uploadFiles( $dataInsert,$key, $request->file($value . "_file"), $opts, $__id );
@@ -210,15 +213,22 @@ class Controller extends BaseController
    public function update($klass, $keyValue, array $updateColumns, Request $request, array $opts = []) {
           $dataUpdate = [];
           $__id = $request->input('__id');
+          $returnData = [];
        try {
-            
             foreach ($updateColumns as $key => $value) {
-           //var_dump();
-           $dataUpdate[ $key ] = $request->input(  $value );
+             //var_dump();
+                /*
+                 * Se verifica si el campo ha sido enviado, 
+                 * solo se actualizara los campos que han sido "modificados" desde los formularios
+                 * **/
+             if ($request->has( $value )) {
+                               $dataUpdate[ $key ] = $request->input(  $value );
+             }
            $dataUpdate[ 'USUARIO_MODIFICACION' ] = $this->getUserName();
 
            if ($request->hasFile( $value . "_file" )) {
-               $this->uploadFiles( $dataInsert,$key, $request->file($value . "_file"), $opts, $__id );
+               $this->uploadFiles( $dataUpdate,$key, $request->file($value . "_file"), $opts, $__id );
+               $returnData[$key] = $dataUpdate[$key];
            }
 
         }
@@ -226,7 +236,7 @@ class Controller extends BaseController
             if ($validacionDuplicados['valid']) {
                 $updated = $klass::where( $klass::KEY , '=',$keyValue)->update($dataUpdate);
                 if ($updated) {
-                    return ['success' => true, 'message' => 'Registro actualizado', 'validacion' => $validacionDuplicados];
+                    return ['success' => true, 'message' => 'Registro actualizado', 'data' => $returnData , 'validacion' => $validacionDuplicados,];
                 } else {
                     return ['success' => false, 'message' => 'El registro no se actualizo'];
                 }
@@ -282,6 +292,7 @@ class Controller extends BaseController
                ***/
               /* 1 = 1 se agrega para evitar problema con los 'AND'  agregados luego **/
               $k =  $k->whereRaw( "1 = 1 " . $where    , $valoresNuevos );
+              logger(  $k->toSql() );
               $total = $k->count();
               if ($total > 0) {
                   return ['valid' => false, 'message' => 'Registro duplicado'];
@@ -324,6 +335,7 @@ class Controller extends BaseController
      */
    public function uploadFiles(&$data, $key ,$file, array $opts = [] , $__id = null ) {
        try {
+           
            $ruta = config('sistema.uploads.path');
            if (array_key_exists('folderUpload', $opts)) {
                $ruta = $opts['folderUpload'];
@@ -334,7 +346,7 @@ class Controller extends BaseController
            $archivo = "$ruta/$nombreArchivo";
            $data[$key] ="./$archivo";
            Storage::disk( config('sistema.uploads.storage') )->put($archivo, $file->get() );
-           return [ "status" => "ok" ];
+           return [ "status" => "ok"  ];
        } catch  (\Exception $ex) {
             $this->log( $ex );
            return ["status" => false, "message" => "Falla en la carga de imagen"];
@@ -342,7 +354,7 @@ class Controller extends BaseController
        }
 
    }
-
+  
    protected function respuesta( $success, $message, $extra = [] ) {
        $resp = [];
        $resp['success'] = $success;
@@ -368,10 +380,15 @@ class Controller extends BaseController
            $data = Auth::GetData($token);
            return $data->NOMBRE_USUARIO;
        }
-       return null;
+       return 'ADMIN';
    }
 
    protected function log(\Exception $ex) {
        logger('archivo: ' . $ex->getFile() . ', linea: ' . $ex->getLine() . ',error: ' . $ex->getMessage() );
+   }
+
+
+   protected function DocumentPdf($url, $archivo) {
+      
    }
 }

@@ -15,7 +15,9 @@ class Servicio extends BaseModel
     const KEY = 'CODIGO_SERVICIO';
 
 
-
+      public function DocumentosXServicio() {
+        return $this->hasMany(\App\Models\TB\DocumentoServicio::class, 'CODIGO_SERVICIO');
+      }
     /*public function getAuthIdentifierName()
     {
         return $this->CorreoVisitante;

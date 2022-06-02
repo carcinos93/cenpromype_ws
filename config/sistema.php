@@ -15,6 +15,11 @@ return [
       */
     'paths' => [
         'wordpress_sitio' => '..'
+    ],
+    'wordpress' => [
+        'urls' => [
+            'sector' => ''
+        ]
     ]
 
 

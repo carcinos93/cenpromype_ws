@@ -10,7 +10,7 @@ class Usuario extends BaseModel
     protected $table = 'CAT_USUARIOS';
     protected $primaryKey = 'CODIGO_USUARIO';
     protected $no_duplicados = [ 'CORREO_ELECTRONICO' ];
-    protected $fillable = ['NOMBRE_USUARIO', 'CONTRASENIA'.'CORREO_ELECTRONICO', 'ESTADO', 'FECHA_ADICION', 'USUARIO_ADICION'];
+    protected $fillable = ['NOMBRE_USUARIO', 'CONTRASENIA','CORREO_ELECTRONICO', 'ESTADO', 'FECHA_ADICION', 'USUARIO_ADICION'];
     const CREATED_AT = 'FECHA_ADICION';
     const UPDATED_AT = 'FECHA_MODIFICACION';
     const KEY = 'CODIGO_USUARIO';

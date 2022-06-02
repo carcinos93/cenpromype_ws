@@ -20,13 +20,14 @@ class Auth {
         );
 
         return JWT::encode($token, self::$secret_key);
+    
     }
-
-     public static function TokenNuevoRegistro( $data ) {
+    
+     public static function Token( $data, $extraTime ) {
         $time = time();
 
         $token = array(
-            'exp' => $time + (60 * 60 * 24), //una dia
+            'exp' => $time + ($extraTime), //una dia
             'aud' => self::Aud(),
             'data' => $data
         );

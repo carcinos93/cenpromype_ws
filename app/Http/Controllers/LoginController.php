@@ -67,7 +67,7 @@ class LoginController extends Controller {
                             ->where('T3.CODIGO_USUARIO','=', $data->CODIGO_USUARIO )
                             ->whereColumn('T3.CODIGO_ROL','T2.CODIGO_ROL');
                     }  );
-            } )->get();
+            } )->orderBy("DESCRIPCION", "ASC")->get();
         }
 
         return $menuPadre;
