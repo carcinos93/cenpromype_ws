@@ -16,6 +16,7 @@
         </div>
         <div class="p-col-12 p-text-center" >
             <rotor-imagenes :tiempo="5000" :deshabilitar-botones="true" imagenes="{{ $sector->BANNER }}" 
+                elemento-to="#main"
                 urlbase="{{ Wordpress::index() }}">
                 <template v-slot:texto="{ data }">
                     <div v-if="data.texto != ''" style="position: absolute;color: rgb(70, 70, 70);width: 100%;font-size: 1.5rem;font-weight: bold;height: 100%;">
