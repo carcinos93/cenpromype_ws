@@ -114,8 +114,7 @@ export default {
          */
         handleSubmit(values) {
 
-            console.log(values);
-            console.log(this.model);
+
             // TITULO
             var formularios = this.formularios.map((v, i) => { return v.ID });
             apiPortal.post( 'api/registro', { preguntas: this.model, formularios: formularios  })

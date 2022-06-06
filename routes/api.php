@@ -166,6 +166,9 @@ Route::prefix('catalogos')->group(function () {
     
     });
 
+    Route::get('/sector-economico/{identificador}' , function ($identificador) {
+        return \App\Models\Catalogos\SectorEconomico::where( 'IDENTIFICADOR', '=', $identificador )->first();
+    });
     //Rutas que requieren autorizacion
     Route::middleware(['auditoria'])->group(function () {
         /* PAISES**/

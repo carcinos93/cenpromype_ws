@@ -60,7 +60,6 @@ i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
         app.component('formulario', Formulario);
     //
         var id = "#" + arr[section].id;
-        console.log(id);
         app.mount(id);
     }
 
