@@ -1,9 +1,51 @@
 
+<template>
+
+    <template v-if="multi">
+        <!--  :optionGroupValue="isGroup ? groupValue : undefined"
+              :optionValue="valor"
+         -->
+        <multi-select :class="cssclass" :filter="true" filter-placeholder="Buscar"
+            @change="onChangeSelect($event)"
+            @input="handleInput($event)"
+            v-model="selectedItem"
+            :options="itemsData"
+            :optionLabel="descripcion"
+            :loading="cargando"
+            :optionGroupLabel="isGroup ? groupDesc ?? descripcion : undefined"
+            :optionGroupChildren="isGroup ? 'items' : undefined">
+            <template #option="{ option }">
+                <span :data-especifique="option.HABILITAR_ENTRADA" :data-id="option.ID" class="p-item-custom"  >
+                    {{ option.DESCRIPCION }}
+                </span>
+            </template>
+          </multi-select>
+    </template> 
+    <template v-else>
+          <dropdown :class="cssclass" :filter="true" filter-placeholder="Buscar"
+                @change="onChangeSelect($event)"
+                @input="handleInput($event)"
+                v-model="selectedItem"
+                :options="itemsData"
+                :optionLabel="descripcion"
+                :loading="cargando"
+                :optionGroupLabel="isGroup ? groupDesc ?? descripcion : undefined"
+                :optionGroupChildren="isGroup ? 'items' : undefined">
+            <template #option="{ option }">
+                <span :data-especifique="option.HABILITAR_ENTRADA" :data-id="option.ID" class="p-item-custom"  >
+                    {{ option.DESCRIPCION }}
+                </span>
+            </template>
+          </dropdown>
+    </template> 
+  <input-text class="p-mt-2" v-if="especifiqueVisible"  placeholder="Especifique" ref="entrada" />
+</template>
 
 <script>
 import axios from 'axios';
 import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
+import InputText from 'primevue/inputtext';
 import { h } from 'vue'
 import { useI18n } from 'vue-i18n';
 export default {
@@ -21,8 +63,7 @@ export default {
         groupValue: { },
         datasource: { default: "" },
         descripcionCampo: { default: "descripcion" }, 
-        valorCampo: {default: "id"},
-        
+        valorCampo: {default: "id"}
      },
      data() {
         return  {
@@ -32,37 +73,14 @@ export default {
             selectedItem: null,
             descripcion: this.descripcionCampo,
             valor: this.valorCampo,
-            selectedItems: []
+            selectedItems: [],
+            especifiqueVisible: false
         }
     },
      /***
       * Se usa la función render, para facilitar el tipo de control a retornar
       */
-    render(createElement) {
-       
-        var control = this.multi ? MultiSelect : Dropdown;
-        var props = {  class: this.cssclass, 
-        filter : true, 
-        filterPlaceholder: "Buscar", 
-        onChange: (event) => { this.onChangeSelect(event) },
-        onInput:(event) => { this.handleInput(event) },
-         'onUpdate:modelValue': (value) => { this.selectedItem = value },
-        loading: this.cargando,
-        modelValue: this.selectedItem,
-        options: this.itemsData,
-        optionLabel: this.descripcion,
-        optionValue: this.valor};
-
-        if (this.isGroup) {
-            props['optionGroupLabel'] = (this.groupDesc ?? "") == "" ? this.descripcion : this.groupDesc;
-            props['optionGroupValue'] = (this.groupValue ?? "") == "" ? this.valor : this.groupValue;
-            props['optionGroupChildren'] = 'items';
-        }
-        //** tipo control, propiedades, slots  */
-        /** Se modifica el template para el elemento de lista */
-        return h(control,props, {  option: (slot) =>  h("span", { "data-id" : slot.option.ID, "class": "p-item-custom" } , slot.option.DESCRIPCION) });
-    },
-    
+  
    
     methods: {
         handleInput() {
@@ -76,60 +94,27 @@ export default {
                 .then(response => {
                     this.itemsData.push( ...response.data);
                     this.cargando = false;
-                    //this.selectedItem = this.value;
                 });
         } else {
             this.cargando = false;
             }
         },
-        onChangeSelect: function(v) {
-            v.originalEvent.stopPropagation();
-            let target = v.originalEvent.target;
-            let valor = null;    
+        onChangeSelect: function(event) {
+            event.originalEvent.stopPropagation();
+            let target = event.originalEvent.target;
+            let valor = null;
+            
             if (this.multi) {
-                /*
-                Se debe hacer una verificación del elemento que fue seleccionado
-                */
-                let span = target;
-                let checkbox = target;
-                let parent = target;
-                    
-                if (parent.className.includes("p-multiselect-item")) { //Si el click fue por al elemento <li></li>
-                    checkbox = parent.querySelector(".p-checkbox-box");
-                    span = parent.querySelector(".p-item-custom");
-                } else if (span.className.includes("p-item-custom")) { //Si el click fue sobre el texto 
-                    parent = span.parentElement;
-                    checkbox = parent.querySelector(".p-checkbox-box");       
-                } else if (checkbox.className.includes("p-checkbox-box")) { //Si el click fue sobre el checkbox
-                    parent = checkbox.parentElement.parentElement;
-                     span = parent.querySelector(".p-item-custom");
-                }
-
-                let desc = parent.attributes['aria-label'].value;
-                let value = span.attributes['data-id'].value ;
-                /*Se hace una verificación contraria, ya que el elemento checkbox añade la clase .pi-check 
-                después de la ejecución de este método
-                */
-                if (checkbox.querySelector(".pi-check") == null) {
-                    this.selectedItems.push( { "value": value, "desc": desc } );
-                } else {
-                    /**Si lo ha desmarcado el checkbox se quita de la lista de seleccionados */
-                    var newArr = [];
-                    this.selectedItems.forEach((v, i) => {
-                        if (v.value != value) {
-                            newArr.push({...v});
-                        }
-                    });
-                    this.selectedItems = newArr;
-                }
-                
-                valor = this.selectedItems.map(( v ) => { return {...v} });
+                valor = ( event.value ?? [] ).map(( v ) => { return { value:  v[ this.groupValue ], desc: v[ this.groupDesc ]  }    }); 
+                this.especifiqueVisible = (event.value ?? []).filter((v) => v.HABILITAR_ENTRADA == 1).length > 0
 
             } else {
-             valor =  {'value' : v.value.toString(), 'desc': target.innerText}
+                valor = { value:  event.value[ this.valor ], desc: event.value[ this.descripcion ]  }
+                this.especifiqueVisible = event.value.HABILITAR_ENTRADA == 1;
             }
-
-            this.selectedItem = valor;
+            
+           
+            //this.selectedItem = valor;
             this.$.emit('onchange', valor); /** emite  una funcion de cambio */
         }
     },
@@ -152,7 +137,8 @@ export default {
     },
     components: {
         Dropdown,
-        MultiSelect
+        MultiSelect,
+        InputText
     }
 }
 </script>

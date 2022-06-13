@@ -46,3 +46,85 @@ export default {
     }
 }
 </script>
+
+
+  render(createElement) {
+       
+        var control = this.multi ? MultiSelect : Dropdown;
+        var props = {  class: this.cssclass, 
+        filter : true, 
+        filterPlaceholder: "Buscar", 
+        onChange: (event) => { this.onChangeSelect(event) },
+        onInput:(event) => { this.handleInput(event) },
+         'onUpdate:modelValue': (value) => { this.selectedItem = value },
+        loading: this.cargando,
+        modelValue: this.selectedItem,
+        options: this.itemsData,
+        optionLabel: this.descripcion,
+        optionValue: this.valor};
+
+        if (this.isGroup) {
+            props['optionGroupLabel'] = (this.groupDesc ?? "") == "" ? this.descripcion : this.groupDesc;
+            props['optionGroupValue'] = (this.groupValue ?? "") == "" ? this.valor : this.groupValue;
+            props['optionGroupChildren'] = 'items';
+        }
+        //** tipo control, propiedades, slots  */
+        /** Se modifica el template para el elemento de lista */
+        return h(control,props, {  option: (slot) =>  h("span", { "data-id" : slot.option.ID, "class": "p-item-custom" } , slot.option.DESCRIPCION) });
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     if (this.multi) {
+                /*
+                Se debe hacer una verificación del elemento que fue seleccionado
+                */
+                let span = target;
+                let checkbox = target;
+                let parent = target;
+                    
+                if (parent.className.includes("p-multiselect-item")) { //Si el click fue por al elemento <li></li>
+                    checkbox = parent.querySelector(".p-checkbox-box");
+                    span = parent.querySelector(".p-item-custom");
+                } else if (span.className.includes("p-item-custom")) { //Si el click fue sobre el texto 
+                    parent = span.parentElement;
+                    checkbox = parent.querySelector(".p-checkbox-box");       
+                } else if (checkbox.className.includes("p-checkbox-box")) { //Si el click fue sobre el checkbox
+                    parent = checkbox.parentElement.parentElement;
+                     span = parent.querySelector(".p-item-custom");
+                }
+
+                let desc = parent.attributes['aria-label'].value;
+                let value = span.attributes['data-id'].value ;
+                /*Se hace una verificación contraria, ya que el elemento checkbox añade la clase .pi-check 
+                después de la ejecución de este método
+                */
+                if (checkbox.querySelector(".pi-check") == null) {
+                    this.selectedItems.push( { "value": value, "desc": desc } );
+                } else {
+                    /**Si lo ha desmarcado el checkbox se quita de la lista de seleccionados */
+                    var newArr = [];
+                    this.selectedItems.forEach((v, i) => {
+                        if (v.value != value) {
+                            newArr.push({...v});
+                        }
+                    });
+                    this.selectedItems = newArr;
+                }
+                
+                valor = this.selectedItems.map(( v ) => { return {...v} });
+
+            } else {
+             valor =  {'value' : v.value.toString(), 'desc': target.innerText}
+            }

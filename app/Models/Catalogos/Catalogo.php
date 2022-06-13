@@ -11,7 +11,7 @@ class Catalogo extends BaseModel
     protected $primaryKey = 'ID';
     protected $filtroGeneral = ['DESCRIPCION'];
     protected $no_duplicados = ['DESCRIPCION', 'TIPO_CATALOGO'];
-    protected $fillable = ['DESCRIPCION','TIPO_CATALOGO', 'NIVEL', 'CATALOGO_PADRE']; // 'USUARIO_ADICION', 'FECHA_ADICION'
+    protected $fillable = ['DESCRIPCION','TIPO_CATALOGO', 'NIVEL', 'CATALOGO_PADRE', 'HABILITAR_ENTRADA']; // 'USUARIO_ADICION', 'FECHA_ADICION'
     const CREATED_AT = null;
     const UPDATED_AT = null;
     const KEY = 'ID';

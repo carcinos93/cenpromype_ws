@@ -17,11 +17,11 @@ class AuditoriaVisitante extends Middleware {
 
         try {
             $token = $request->header('X-Authorization');
-            $tokenValido = \App\Helpers\Auth::Check($token);
+            /*$tokenValido = \App\Helpers\Auth::Check($token);
             if (!$tokenValido) {
                 $result = ['message' => "mensajes.no_login", 'success' => false];
                 return response()->json( $result, 401);
-            }
+            }*/
         } catch (\Exception $exc) {
             logger('error en middlerware ' . $exc->getMessage() .  ', archivo: ' . $exc->getFile() . '( linea: ' . $exc->getLine() );
             $result = ['message' => "servicio no disponible", 'success' => false];

@@ -25,6 +25,10 @@ Route::get('/', function () {
 });
 
 
+Route::get('administrativo', function () {
+    return view('administrativo.index');
+});
+
 Route::get('job', function (){
     for ($i = 1, $total = 10; $i <= $total; $i++)
     {

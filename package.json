@@ -5,7 +5,9 @@
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "production": "mix --production"
+        "production": "mix --production",
+        "watch-adm": "mix watch --mix-config=build/webpack.adm.js",
+        "prod-adm": "mix --production --mix-config=build/webpack.adm.js"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",

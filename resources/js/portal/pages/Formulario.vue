@@ -18,11 +18,11 @@
                                 <Field v-slot="{ handleChange  }" :name="pregunta.modelId" :rules="pregunta.reglas"
                                 :validateOnBlur="true" :validateOnChange="true" :validateOnInput="false">
                                     <template v-if="pregunta.TIPO == 'text'">
-                                        <inputtext @change="handleChange"   :id="'pregunta_' + pregunta.ID" v-model="model[pregunta.modelId].value" ></inputtext>
+                                        <inputtext @change="handleChange"   :id="'pregunta_' + pregunta.ID" v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].value" ></inputtext>
                                     </template>
                                     <template v-else-if="pregunta.TIPO == 'select'">
-                                        <select-control v-model="model[pregunta.modelId].model"
-                                        :ref="'pregunta_' + pregunta.ID"  @onchange="onChangeSelect($event, pregunta, i, j); handleChange($event); model[pregunta.modelId].value = $event" :datasource="pregunta.ORIGEN.datasource"
+                                        <select-control v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].model"
+                                        :ref="'pregunta_' + pregunta.ID"  @onchange="onChangeSelect($event, pregunta, i, j); handleChange($event); model[pregunta.ID_FORMULARIO][pregunta.modelId].value = $event" :datasource="pregunta.ORIGEN.datasource"
                                             :items="pregunta.ORIGEN.items"  label=""
                                             :descripcion-campo="pregunta.ORIGEN.campos.descripcion"
                                             :params="pregunta.ORIGEN.params" 
@@ -33,7 +33,7 @@
                                             :group-value="pregunta.ORIGEN.campos.grupoID"></select-control>
                                     </template>
                                     <template v-else-if="pregunta.TIPO == 'date'">
-                                        <calendar show-icon="true" @date-select="handleChange($event)" date-format="dd/mm/yy"  v-model="model[pregunta.modelId].value"  :id="'pregunta' + pregunta.ID" ></calendar>
+                                        <calendar show-icon="true" @date-select="handleChange($event)" date-format="dd/mm/yy"  v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].value"  :id="'pregunta' + pregunta.ID" ></calendar>
                                     </template>
                                     <ErrorMessage :name="'pregunta_' + pregunta.ID" v-slot="{ message }">
                                             <p> 
@@ -117,7 +117,15 @@ export default {
 
             // TITULO
             var formularios = this.formularios.map((v, i) => { return v.ID });
-            apiPortal.post( 'api/registro', { preguntas: this.model, formularios: formularios  })
+            var preguntas = {};
+
+            formularios.forEach((v) => {
+                let p = this.model[v];
+                preguntas = { ...preguntas, ...p};
+            });
+            
+            console.log(preguntas);
+            apiPortal.post( 'api/registro', { preguntas: preguntas, formularios: formularios  })
             .then((response) => {
                 var data = response.data;
                 if (data['success']) {
@@ -197,11 +205,14 @@ export default {
                     let temp = v;
             
                     let idPreguta = `pregunta_${v.ID}`;
-                    
+                    if (!this.model[v.ID_FORMULARIO]) {
+                        this.model[v.ID_FORMULARIO] = {};
+                    }
+
                     temp['modelId'] =( v.VARIABLE ?? "" ) == "" ? idPreguta : v.VARIABLE; 
                     /** Para las listas se utilizara value ya que esta se incluye sus valores con sus respectivas descripciones
                      * en model solo están incluidos los valores **/
-                    this.model[ temp['modelId'] ] = { value: null, formulario: v.ID_FORMULARIO, model: null, id_pregunta: v.ID , label: v.PREGUNTA };
+                    this.model[v.ID_FORMULARIO][ temp['modelId'] ] = { value: null, formulario: v.ID_FORMULARIO, model: null, id_pregunta: v.ID , label: v.PREGUNTA };
 
                     var reglas = null;
                         if (v.TIPO == 'text') {
@@ -258,10 +269,9 @@ export default {
                     data.preguntas = preguntas;
                     /**Si existe un formulario adicional al principal, solo actualiza con el nuevo */
                      if (this.formularios[1]) {
-                         this.formularios[1] = data;
-                    } else {
-                        this.formularios.push(  data );
-                    }
+                         this.formularios = this.formularios.filter((v, i) => i == 0);
+                     }
+                    this.formularios.push(  data );
                     //si se ha cargado un segundo formulario se cambia el tab
                     if (this.formularios.length >= 2 ) {
                         let ref =  this.$refs["tabView"];
