@@ -1,8 +1,11 @@
 <template>
+ <loading v-model:active="cargando"
+                 :can-cancel="false"
+                 :is-full-page="true"/>
         <Form @submit="handleSubmit" ref="Formulario">
         <Card>
             <template #header>
-                <ProgressBar style="height: 0.5em;" v-if="cargando" mode="indeterminate"/>
+                <!--<ProgressBar style="height: 0.5em;" v-if="cargando" mode="indeterminate"/>-->
             </template>
             <template #content>
                  <TabView ref="tabView">
@@ -73,6 +76,7 @@ import TabPanel from 'primevue/tabpanel';
 import ProgressBar from 'primevue/progressbar';
 import Card from 'primevue/card';
 import { Form, Field, ErrorMessage  } from 'vee-validate';
+import loading from 'vue-loading-overlay';
 import * as yup from 'yup';
 //import useVuelidate from '@vuelidate/core';
 //import { required, email, helpers } from '@vuelidate/validators'
@@ -308,7 +312,8 @@ export default {
         TabView,
         TabPanel,
         Card,
-        ProgressBar
+        ProgressBar,
+        loading
     },
 };
 </script>

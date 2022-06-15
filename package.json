@@ -10,7 +10,6 @@
         "prod-adm": "mix --production --mix-config=build/webpack.adm.js"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.0.0",
         "axios": "^0.19",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
@@ -18,8 +17,6 @@
         "laravel-mix": "^6.0.39",
         "lodash": "^4.17.13",
         "popper.js": "^1.12",
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.15.2",
         "sass-loader": "^8.0.0",
@@ -30,20 +27,14 @@
     "dependencies": {
         "@vuelidate/core": "^2.0.0-alpha.33",
         "@vuelidate/validators": "^2.0.0-alpha.26",
-        "final-form": "^4.20.6",
-        "formik": "^2.2.9",
         "moment": "^2.29.1",
         "primeflex": "^2.0.0",
         "primeicons": "^5.0.0",
-        "primereact": "^7.0.1",
         "primevue": "^3.10.0",
-        "react-final-form": "^6.5.7",
-        "react-google-recaptcha": "^2.1.0",
-        "react-hook-form": "^7.21.0",
-        "react-transition-group": "^4.4.2",
         "vee-validate": "^4.5.11",
         "vue": "^3.2.26",
         "vue-i18n": "^9.2.0-beta.26",
+        "vue-loading-overlay": "^5.0.3",
         "vue-recaptcha": "^2.0.1",
         "yup": "^0.32.11"
     }

@@ -19,6 +19,7 @@ import Productos from './portal/pages/Productos';
 import Formulario from './portal/pages/Formulario';
 import { createI18n } from 'vue-i18n';
 import Tooltip from 'primevue/tooltip';
+import VueLoading from 'vue-loading-overlay';
 /*Vue.component('form-control', require('./portal/components/controls/FormControl.vue').default);
 Vue.component('select', require('./portal/components/controls/Select.vue').default);
 */
@@ -43,7 +44,7 @@ i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
     arr.push( { "id" : "app" } );
     
     for (var section in arr) {
-        const app = createApp({}).use(PrimeVue).use(i18n);
+        const app = createApp({}).use(PrimeVue).use(i18n).use(VueLoading);
 
             app.config.globalProperties.$filters = {
                 formatDate(value, formato) {
