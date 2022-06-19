@@ -15,11 +15,16 @@ import PrimeVue from 'primevue/config';
 import Noticias from './portal/pages/Noticias';
 import Informes from './portal/pages/Informes';
 import RotorImagenes from './portal/pages/RotorImagenes';
+import SectoresInforme from './portal/pages/informe/Sectores';
+import Servicios from './portal/pages/informe/Servicios';
+import ProductosInforme from './portal/pages/informe/Productos';
 import Productos from './portal/pages/Productos';
 import Formulario from './portal/pages/Formulario';
 import { createI18n } from 'vue-i18n';
 import Tooltip from 'primevue/tooltip';
 import VueLoading from 'vue-loading-overlay';
+import { createRouter, createWebHashHistory } from 'vue-router';
+
 /*Vue.component('form-control', require('./portal/components/controls/FormControl.vue').default);
 Vue.component('select', require('./portal/components/controls/Select.vue').default);
 */
@@ -33,18 +38,31 @@ Vue.component('select', require('./portal/components/controls/Select.vue').defau
 /*app.component('select-control', Select);*/
 
 //app.mount("#app");
+
+
+
+
 if (window.lang == undefined) window.lang = 'es';
 
 const i18n = createI18n({ locale: window.lang });
 i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
 
-    
     var sections = document.getElementsByClassName( "app-vue" ); 
     let arr = [ ...sections ];
     arr.push( { "id" : "app" } );
-    
+    const routes = [
+        { path: '/', component: SectoresInforme, name: 'inicio' },
+        { path: '/informes/productos/:idSector', component: ProductosInforme, name:'productos' },
+        { path: '/informes/servicios/:idProducto', component: ProductosInforme, name:'servicios' }
+    ];
+    const router = createRouter(
+        {
+            history: createWebHashHistory(),
+            routes
+        }
+    );
     for (var section in arr) {
-        const app = createApp({}).use(PrimeVue).use(i18n).use(VueLoading);
+        const app = createApp({}).use(PrimeVue).use(i18n).use(VueLoading).use(router);
 
             app.config.globalProperties.$filters = {
                 formatDate(value, formato) {
@@ -52,7 +70,8 @@ i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
                     return moment(value).format(formato);
                 }
             }
-
+        
+        
         app.directive('tooltip', Tooltip);
         app.component('informes', Informes);
         app.component('rotor-imagenes', RotorImagenes);

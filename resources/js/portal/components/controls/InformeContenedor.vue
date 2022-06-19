@@ -82,10 +82,12 @@ export default {
         },
         registrarDescarga() {
             if (this.informe) {
+                if (window.wpApiSettings) {
                 axios.post(`${window['local_url']}/wp-json/inteligenciabi/v1/usuario-descarga`, 
-                { "documento" : this.informe.DESCRIPCION_DOCUMENTO }, { headers: { "X-WP-Nonce": window.wpApiSettings.nonce } })
-                .then()
-                .catch((error) => console.log(error));
+                    { "documento" : this.informe.DESCRIPCION_DOCUMENTO }, { headers: { "X-WP-Nonce": window.wpApiSettings.nonce } })
+                .then().catch((error) => console.log(error));
+
+                }
             }
 
         },
@@ -120,6 +122,7 @@ export default {
         }
     },
     mounted() {
+        if (this.elementoTo ?? "" == "") {  return; }
         let elemento = this.elementoTo.replace(/[\.\#]/g, "");
         if ( this.elementoTo.indexOf(".") >= 0 ) {
            if( document.getElementsByClassName( elemento )) {

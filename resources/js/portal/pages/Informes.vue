@@ -45,10 +45,8 @@
                             <div class="p-shadow-3 bg-azul p-h-100">
                                 <div style="background-color:transparent">
                                 <div class="p-grid p-m-0 cursor-pointer" @click="verInforme(informe)">
-                                  
                                         <slot name="imagen" :informe="informe" :index="index"> </slot>
                                         <slot name="contenido" :informe="informe" :index="index"></slot>
-                                   
                                 </div>
                                 </div>
                             </div>
@@ -58,30 +56,6 @@
             </div>
     </div>
     <informe-contenedor :informe="informe" :url-pdf="urlPdf" v-on:afterLoad="afterLoadInforme" v-on:regresar="regresarInforme" :url="urlInforme" elemento-to=".ast-container" />
-    <!--<div class="bg-white contendor-iframe">
-            <div class="p-d-block p-mt-5" v-if="mostrarInforme">
-                <div class="p-grid p-jc-end pointer-click">
-                    <div class="p-col-6 p-md-2">
-                        <div class="p-grid">
-                            <div class="p-col">
-                                <i class="pi pi-file-pdf"></i>
-                            </div>
-                            <div class="p-col">
-                                <i class="pi pi-print "></i>
-                            </div>
-                            <div class="p-col">
-                                <i class="pi pi-envelope"></i>
-                            </div>
-                            <div class="p-col">
-                                <i class="pi pi-arrow-circle-left ejecutar-evento" v-on:click="regresar"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <iframe id="frameDocumento" frameborder="0" v-on:load="cargaDocumento" style="overflow:hidden !important;width:100%;" v-bind:height="alturaDocumento" width="" v-bind:src="urlInforme"></iframe>
-        </div>-->
 </template>
 <script>
 import PanelMenu from "primevue/panelmenu";
@@ -159,8 +133,6 @@ export default {
                     return;
                 }
 
-            
-           
                 this.urlInforme = `${this.urlapi}vistas/documento/${informe.CODIGO_DOCUMENTO}`;
                 if (informe.RUTA_DOCUMENTO  && informe.RUTA_DOCUMENTO != '')
                 {
@@ -168,10 +140,7 @@ export default {
                 } else {
                     this.urlPdf = '';
                 }
-                
-               
                 //window.cargando();
-
         },
         cargaDocumento(e) {
             if (this.urlInforme != '') {
