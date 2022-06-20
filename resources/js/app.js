@@ -16,8 +16,9 @@ import Noticias from './portal/pages/Noticias';
 import Informes from './portal/pages/Informes';
 import RotorImagenes from './portal/pages/RotorImagenes';
 import SectoresInforme from './portal/pages/informe/Sectores';
-import Servicios from './portal/pages/informe/Servicios';
+import ServiciosInforme from './portal/pages/informe/Servicios';
 import ProductosInforme from './portal/pages/informe/Productos';
+import InformesListado from './portal/pages/informe/Informes';
 import Productos from './portal/pages/Productos';
 import Formulario from './portal/pages/Formulario';
 import { createI18n } from 'vue-i18n';
@@ -53,7 +54,8 @@ i18nConfig.loadLocaleMessages(i18n, window.lang).then(_ => {
     const routes = [
         { path: '/', component: SectoresInforme, name: 'inicio' },
         { path: '/informes/productos/:idSector', component: ProductosInforme, name:'productos' },
-        { path: '/informes/servicios/:idProducto', component: ProductosInforme, name:'servicios' }
+        { path: '/informes/servicios/:idProducto', component: ServiciosInforme, name:'servicios' },
+        { path: '/informes/:idProducto/:idServicio', component: InformesListado, name: 'informes' }
     ];
     const router = createRouter(
         {

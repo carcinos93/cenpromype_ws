@@ -11,7 +11,7 @@
                <p-column header="">
                     <template #body="{ data }">
                           <i class="pi pi-pencil text-primary p-mr-2 cursor-pointer" @click="editar( data )" > </i>
-                          <i class="pi pi-minus-circle text-danger p-mr-2 cursor-pointer"> </i>
+                          <i class="pi pi-minus-circle text-danger p-mr-2 cursor-pointer" @click="borrar( data )" > </i>
                     </template>
                 </p-column>
         </p-datatable>
@@ -110,6 +110,9 @@ export default {
            this.dialogoVisible = true;
            this.datoSeleccionado = {  ...data };
         },
+        borrar(data) {
+
+        },
         /***
          * Paginación
          */
@@ -143,7 +146,7 @@ export default {
         'p-dialog': dialog,
         'p-tabview': tabview,
         'p-tabpanel': tabpanel,
-        'controles': controles
+        'controles': ocntroles
     }
 }
 </script>

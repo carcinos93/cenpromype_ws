@@ -84,6 +84,7 @@ class TBController extends Controller {
                 array('TB_DOCUMENTOS.CODIGO_DOCUMENTO', 
                     'TB_DOCUMENTOS.CODIGO_PRODUCTO', 
                     'TB_DOCUMENTOS.DESCRIPCION_DOCUMENTO',
+                    'TB_DOCUMENTOS.NOMBRE_DOCUMENTO',
                     'TB_DOCUMENTOS.ESTATUS',
                     'TB_DOCUMENTOS.ACCESO', 
                     'TB_PRODUCTOS.NOMBRE_PRODUCTO'),

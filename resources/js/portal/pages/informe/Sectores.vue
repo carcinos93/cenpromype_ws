@@ -4,10 +4,12 @@
             <router-link :to="{name: 'productos', params: { idSector: item.CODIGO_SECTOR } }" >
                 <div class="p-shadow-7 cursor-pointer">
                 <img src="http://72.167.226.188/~oqmdev/portalcenpromype/wp-content/uploads/banner-informes.png" style="width:100%;height:auto;opacity:0.15">
-                    <div  class="position-absolute position-absolute-center">
-                            <h2 class="p-flex">
-                            {{ item.SECTOR_ECONOMICO }}
-                        </h2>
+                    <div  class="position-absolute position-absolute-center p-h-100">
+                              <div class="d-flex p-ai-center p-h-100"> 
+                                <h2  class="p-m-auto">
+                                {{ item.SECTOR_ECONOMICO }}
+                            </h2>
+                              </div>
                     </div>
                 </div>
             </router-link>
