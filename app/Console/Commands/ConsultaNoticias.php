@@ -49,8 +49,8 @@ class ConsultaNoticias extends Command
         }
         $tiempo = 0;
         foreach ($portales as $portal) {
-            $palabras = $portal['PALABRAS_CLAVES'];
-            $palabras_arr = explode( ",", $palabras );
+            $palabras_arr = $portal['PALABRAS_CLAVES'];
+            # $palabras_arr = explode( ",", $palabras );
     
             if (!empty($palabras_arr)) {        
                 foreach ($palabras_arr as $key => $value) {
@@ -58,7 +58,7 @@ class ConsultaNoticias extends Command
                     //$value = $palabras_arr[0];
                     $job = (new NoticiasConsulta( $portal, $value ))->delay( now()->addMinutes($tiempo)  );                
                     dispatch($job);
-                    $tiempo += 2; 
+                    $tiempo += 1; 
                 }
             }
         }

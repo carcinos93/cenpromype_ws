@@ -107,7 +107,7 @@ class PortalController extends Controller {
         $nombre = $preguntas['nombre']['value'];
         $apellido = $preguntas['apellido']['value'];
         $correo = $preguntas['correo']['value'];
-        $nacionalidad = $preguntas['nacionalidad']['value']['value'];
+        $nacionalidad = $preguntas['nacionalidad']['value']['items']['value'];
 
 
         $nombre_completo = "$nombre $apellido";
@@ -149,14 +149,14 @@ class PortalController extends Controller {
                             $message->to($correo, $nombre_completo,);
                             $message->subject('Bienvenido');
                     });
-                    return $this->respuesta(true, "Correo enviado");
+                    return $this->respuesta(true, "Se ha enviado un correo electrónico con el enlace de verificación");
                     } else {
                         return $this->respuesta(false, 'Servicio no disponible');
                     }
             }
                      catch (\Exception $exc) {
                           logger('error en registro envio correo ' . $exc->getMessage() .  ', archivo: ' . $exc->getFile() . '( linea: ' . $exc->getLine() );
-                          return $this->respuesta(false, "Servicio no disponibleo ");
+                          return $this->respuesta(false, "Servicio no disponible");
        }
        
        
@@ -191,7 +191,6 @@ class PortalController extends Controller {
         $url = config("wordpress.url.sitio") . "wp-json/jwt-auth/v1/token";
         $response =  Http::post($url,  ["username" => "adminwp", "password" =>  "esOQM$21"]);
         return $response['token'];
-
     }
 
     

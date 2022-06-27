@@ -28,6 +28,8 @@ Route::get('/', function () {
 Route::get('administrativo', function () {
     return view('administrativo.index');
 });
+// https://github.com/rap2hpoutre/laravel-log-viewer
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
 Route::get('job', function (){
     for ($i = 1, $total = 10; $i <= $total; $i++)

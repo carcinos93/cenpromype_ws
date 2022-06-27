@@ -21,11 +21,11 @@
                                 <Field v-slot="{ handleChange  }" :name="pregunta.modelId" :rules="pregunta.reglas"
                                 :validateOnBlur="true" :validateOnChange="true" :validateOnInput="false">
                                     <template v-if="pregunta.TIPO == 'text'">
-                                        <inputtext @change="handleChange"   :id="'pregunta_' + pregunta.ID" v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].value" ></inputtext>
+                                        <inputtext @change="handleChange($event)"  :id="pregunta.modelId" v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].value" ></inputtext>
                                     </template>
                                     <template v-else-if="pregunta.TIPO == 'select'">
                                         <select-control v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].model"
-                                        :ref="'pregunta_' + pregunta.ID"  @onchange="onChangeSelect($event, pregunta, i, j); handleChange($event); model[pregunta.ID_FORMULARIO][pregunta.modelId].value = $event" :datasource="pregunta.ORIGEN.datasource"
+                                        :ref="'pregunta_' + pregunta.ID" @onchangeEspecifique="handleChange($event); model[pregunta.ID_FORMULARIO][pregunta.modelId].value = $event"  @onchange="onChangeSelect($event, pregunta, i, j); handleChange($event); model[pregunta.ID_FORMULARIO][pregunta.modelId].value = $event" :datasource="pregunta.ORIGEN.datasource"
                                             :items="pregunta.ORIGEN.items"  label=""
                                             :descripcion-campo="pregunta.ORIGEN.campos.descripcion"
                                             :params="pregunta.ORIGEN.params" 
@@ -38,8 +38,8 @@
                                     <template v-else-if="pregunta.TIPO == 'date'">
                                         <calendar show-icon="true" @date-select="handleChange($event)" date-format="dd/mm/yy"  v-model="model[pregunta.ID_FORMULARIO][pregunta.modelId].value"  :id="'pregunta' + pregunta.ID" ></calendar>
                                     </template>
-                                    <ErrorMessage :name="'pregunta_' + pregunta.ID" v-slot="{ message }">
-                                            <p> 
+                                    <ErrorMessage :name="pregunta.modelId" v-slot="{ message }">
+                                            <p class="p-mt-0"> 
                                                 <small class="p-error">*{{ message }} </small>
                                             </p>
                                     </ErrorMessage>
@@ -133,7 +133,7 @@ export default {
             .then((response) => {
                 var data = response.data;
                 if (data['success']) {
-                    alert("Se ha enviado un correo electrónico con el enlace de verificación");
+                    alert(data['message']);
                     window.close();
                 } else {
                      alert(data['message']);
@@ -293,7 +293,28 @@ export default {
 
     },
     mounted() {
+        yup.addMethod(yup.mixed, 'digitarOtro', function (errorMessage) {
+            
+            return this.test(`test-digitar-otro`, errorMessage, function (value) {
+                const { path, createError } = this;
+                console.log(value);
+                if (value) {
+                    if (value.extra != undefined) {
+                        return value.extra != "" || createError({ path, message: errorMessage })
+                    } else if ( Array.isArray( value ) ) {
+                        /**
+                         * Se filtran los elementos y con la propieda extra vacio
+                         * Si es igual a 0 se toma como valido
+                         */
+                       return value.filter((v, i) => v.extra == ""  ).length == 0 || createError({ path, message: errorMessage })
+                    }
+                }
+                return true;
+            })
+        }  )
         this.cargarFormulario(this.idFormulario);      
+ 
+    
     },
     setup() {
         

@@ -16,4 +16,9 @@ class PortalNoticias extends BaseModel
     const UPDATED_AT = 'FECHA_MODIFICACION';
     const KEY = 'ID';
 
+    protected $casts = [
+        'PALABRAS_CLAVES' => 'array',
+        'URL' => 'array'
+    ];
+
 }

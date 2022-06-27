@@ -41,9 +41,9 @@
         <div class="p-col-12">
             <div id="listaProductos"></div>
         </div>
-        <div class="p-col-12">
+        <!--<div class="p-col-12">
             <h2>¿QUÉ DESEAS BUSCAR?</h2>
-        </div>
+        </div>-->
         <div class="p-col-12">
             <div class="p-grid p-w-100 p-shadow-7 bg-white p-jc-center" id="servicios-lista">
                 <servicios

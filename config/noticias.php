@@ -7,6 +7,6 @@
  */
 
 return  [
-    'maximoPaginas' => 5, // Maximo de paginas a almacenar
+    'maximoPaginas' => 10, // Maximo de paginas a almacenar
     'restriccionFecha' => 'd7' // 7 dias,  d => dias, y => años,  Filtro de tiempo maximo de antiguedad de pagina 
 ];

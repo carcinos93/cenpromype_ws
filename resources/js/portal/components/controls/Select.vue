@@ -38,7 +38,7 @@
             </template>
           </dropdown>
     </template> 
-  <input-text class="p-mt-2" v-if="especifiqueVisible"  placeholder="Especifique" ref="entrada" />
+  <input-text @change="onchangeEspecifique($event)" class="p-mt-2" v-if="especifiqueVisible"  placeholder="Especifique" ref="entrada" />
 </template>
 
 <script>
@@ -72,6 +72,7 @@ export default {
             urlBase: '',
             selectedItem: null,
             descripcion: this.descripcionCampo,
+            selectedValue: null,
             valor: this.valorCampo,
             selectedItems: [],
             especifiqueVisible: false
@@ -99,20 +100,49 @@ export default {
             this.cargando = false;
             }
         },
+        onchangeEspecifique(event) {
+              
+              const { target } = event;
+               
+              
+              let value = target.value ?? "";
+              if (this.selectedValue) {
+                 if (!this.multi) {
+                    this.selectedValue["extra"]  = value;
+                 } else {
+                    this.selectedValue.forEach((v, i) => {
+                        if (v.extra != undefined) {
+                            this.selectedValue[i]['extra'] = value;
+                        }
+                    })
+                 }
+              }
+              this.$.emit('onchangeEspecifique', this.selectedValue ); /** emite  una funcion de cambio */
+        },
         onChangeSelect: function(event) {
             event.originalEvent.stopPropagation();
             let target = event.originalEvent.target;
             let valor = null;
             
             if (this.multi) {
-                valor = ( event.value ?? [] ).map(( v ) => { return { value:  v[ this.groupValue ], desc: v[ this.groupDesc ]  }    }); 
+                valor = ( event.value ?? [] ).map(( v ) => { 
+                        let r = { value:  v[ this.groupValue ], desc: v[ this.groupDesc ]  };
+                        if (v.HABILITAR_ENTRADA == 1 ) {
+                            r['extra'] = "";
+                        }
+                        return r;    
+                    }); 
                 this.especifiqueVisible = (event.value ?? []).filter((v) => v.HABILITAR_ENTRADA == 1).length > 0
 
             } else {
-                valor = { value:  event.value[ this.valor ], desc: event.value[ this.descripcion ]  }
+                valor = { value:  event.value[ this.valor ], desc: event.value[ this.descripcion ]   }
                 this.especifiqueVisible = event.value.HABILITAR_ENTRADA == 1;
+                if (this.especifiqueVisible) {
+                    valor['extra'] = "";
+                }
             }
             
+            this.selectedValue = valor;
            
             //this.selectedItem = valor;
             this.$.emit('onchange', valor); /** emite  una funcion de cambio */

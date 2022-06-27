@@ -176,8 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         AlesZatloukal\GoogleSearchApi\GoogleSearchApiProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class
-
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
     ],
 
     /*
