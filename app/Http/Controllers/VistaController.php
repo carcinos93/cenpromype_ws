@@ -88,6 +88,8 @@ class VistaController extends Controller {
         //var_dump( $consulta->toSql() );
         return $consulta->get(["TB_DOCUMENTOS.CODIGO_DOCUMENTO",
          "TB_DOCUMENTOS.DESCRIPCION_DOCUMENTO", 
+         "TB_DOCUMENTOS.VOLUMEN", 
+         "TB_DOCUMENTOS.FECHA_ACTUALIZACION", 
          "TB_DOCUMENTOS.NOMBRE_DOCUMENTO", 
          "TB_DOCUMENTOS.RUTA_DOCUMENTO", 
          "TB_DOCUMENTOS.ACCESO",

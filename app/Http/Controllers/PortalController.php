@@ -107,7 +107,7 @@ class PortalController extends Controller {
         $nombre = $preguntas['nombre']['value'];
         $apellido = $preguntas['apellido']['value'];
         $correo = $preguntas['correo']['value'];
-        $nacionalidad = $preguntas['nacionalidad']['value']['items']['value'];
+        $nacionalidad = $preguntas['nacionalidad']['value']['desc'];
 
 
         $nombre_completo = "$nombre $apellido";
@@ -144,7 +144,7 @@ class PortalController extends Controller {
                              * Mailtrap no utiliza cuentas de correo sino cadena alfanuméricas
                              * se produce un error si se intente enviar esta cadena como remitente
                              */
-                            $mail =\env('MAIL_HOST') == 'mtp.mailtrap.io' ? "micorreo@mailtrap.com" :  \env('MAIL_USERNAME');
+                            $mail =\env('MAIL_HOST') == 'smtp.mailtrap.io' ? "micorreo@mailtrap.com" :  \env('MAIL_USERNAME');
                             $message->from($mail, "CENPROMYPE");
                             $message->to($correo, $nombre_completo,);
                             $message->subject('Bienvenido');

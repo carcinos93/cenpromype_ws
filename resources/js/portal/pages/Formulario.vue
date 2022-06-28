@@ -297,7 +297,6 @@ export default {
             
             return this.test(`test-digitar-otro`, errorMessage, function (value) {
                 const { path, createError } = this;
-                console.log(value);
                 if (value) {
                     if (value.extra != undefined) {
                         return value.extra != "" || createError({ path, message: errorMessage })

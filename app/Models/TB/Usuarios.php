@@ -9,8 +9,8 @@ class Usuarios extends BaseModel
     public $incrementing = true;
     protected $table = 'TB_USUARIOS';
     protected $primaryKey = 'ID';
-    protected $fillable = ['NOMBRES', 'APELLIDOS', 'CORREO', 'PASSWORD', 'ACTIVO', 'FORMULARIOS'];
-    const CREATED_AT = null;
+    protected $fillable = ['NOMBRES', 'APELLIDOS' ,'PAIS', 'CORREO', 'PASSWORD', 'ACTIVO', 'FORMULARIOS'];
+    const CREATED_AT = 'FECHA_CREACION';
     const UPDATED_AT = null;
     const KEY = 'ID';
 

@@ -42,7 +42,7 @@
                 <div class="p-grid p-jc-center p-mt-3 p-w-100 ">
                         <template v-for="(informe, index) in informes" :key="index">
                         <div :class="cssClassLista" >
-                            <div class="p-shadow-3 bg-azul p-h-100">
+                            <div class="p-shadow-3 p-bg-primary p-h-100">
                                 <div style="background-color:transparent">
                                 <div class="p-grid p-m-0 cursor-pointer" @click="verInforme(informe)">
                                         <slot name="imagen" :informe="informe" :index="index"> </slot>

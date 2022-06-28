@@ -32,7 +32,7 @@
                         @elseif (is_array($respuesta->RESPUESTA['value'] )) 
                             <span>    
                                 @foreach ($respuesta->RESPUESTA['value'] as $valor )
-                                    {{ ($loop->index > "0" ? ", " : "") . $valor['desc']  }}
+                                    {{ ($loop->index > "0" ? ", " : "") .  (isset( $valor['extra']  ) ? $valor['extra'] : $valor['desc'] )  }}
                                 @endforeach
                             </span>
                         @else

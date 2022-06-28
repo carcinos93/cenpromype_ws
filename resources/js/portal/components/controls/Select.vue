@@ -93,7 +93,8 @@ export default {
             axios
                 .get(this.urlBase + datasource, {  params: params })
                 .then(response => {
-                    this.itemsData.push( ...response.data);
+                    //this.itemsData.push( ...response.data);
+                    this.itemsData = response.data;
                     this.cargando = false;
                 });
         } else {
@@ -126,7 +127,7 @@ export default {
             
             if (this.multi) {
                 valor = ( event.value ?? [] ).map(( v ) => { 
-                        let r = { value:  v[ this.groupValue ], desc: v[ this.groupDesc ]  };
+                        let r = { value:  v[ this.valor ], desc: v[ this.descripcion ]  };
                         if (v.HABILITAR_ENTRADA == 1 ) {
                             r['extra'] = "";
                         }

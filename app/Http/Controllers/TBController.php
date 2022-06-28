@@ -81,12 +81,7 @@ class TBController extends Controller {
     #DOCUMENTOS
     public function DocumentoAll(  ) {
         return $this->getRecords(Models\TB\Documento::class, 
-                array('TB_DOCUMENTOS.CODIGO_DOCUMENTO', 
-                    'TB_DOCUMENTOS.CODIGO_PRODUCTO', 
-                    'TB_DOCUMENTOS.DESCRIPCION_DOCUMENTO',
-                    'TB_DOCUMENTOS.NOMBRE_DOCUMENTO',
-                    'TB_DOCUMENTOS.ESTATUS',
-                    'TB_DOCUMENTOS.ACCESO', 
+                array('TB_DOCUMENTOS.*', 
                     'TB_PRODUCTOS.NOMBRE_PRODUCTO'),
             array(
                // ['left', 'CAT_SECTORES_ECONOMICOS', 'TB_DOCUMENTOS.CODIGO_SECTOR', '=', 'CAT_SECTORES_ECONOMICOS.CODIGO_SECTOR'],
@@ -96,10 +91,13 @@ class TBController extends Controller {
     public function DocumentoInsert(  ) {
         $resp = $this->insert(Models\TB\Documento::class, array(
             'CODIGO_PRODUCTO' => 'codigo_producto',
+            'NOMBRE_DOCUMENTO' => 'nombre',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
             'IMAGEN' => 'imagen',
             "RUTA_DOCUMENTO" => 'documento',
+            "VOLUMEN" => 'volumen',
+            "FECHA_ACTUALIZACION" => 'fecha_actualizacion',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());
@@ -110,10 +108,13 @@ class TBController extends Controller {
     public function DocumentoUpdate( $id ) {
         $resp = $this->update(Models\TB\Documento::class, $id, array(
             'CODIGO_PRODUCTO' => 'codigo_producto',
+			'NOMBRE_DOCUMENTO' => 'nombre',
             'DESCRIPCION_DOCUMENTO' => 'descripcion',
             'CONTENIDO' => 'contenido',
             'IMAGEN' => 'imagen',
             "RUTA_DOCUMENTO" => 'documento',
+            "VOLUMEN" => 'volumen',
+            "FECHA_ACTUALIZACION" => 'fecha_actualizacion',
             'ESTATUS' => 'estatus',
             'ACCESO' => 'acceso'
         ), request());

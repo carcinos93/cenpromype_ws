@@ -83,26 +83,40 @@
         <div class="p-col-12">
             <div class="p-grid p-jc-center" id="informes-lista">
             <servicios
-                    @onclickitem="onClickInformes($event)"
+                    
                     :url="informesApiUrl"
                     css-class-lista="p-col-4">
-                    <template v-slot:default="slot">
-                         <div class="p-card documento-visor bg-azul"  style="height:100%; "  >
+                    <template v-slot:default="{item}">
+                         <div class="p-card documento-visor p-bg-primary"  style="height:100%; "  >
                             <div style="background-color: transparent;" class="p-h-100"> 
                             <div class="p-card-header p-text-center">
-                            <img class="p-mt-4" :src="urlBase + slot.item.IMAGEN"/>
+                            <img class="p-mt-4" :src="urlBase + item.IMAGEN"/>
                         </div>
                         <div class="p-card-body">
-                        <div class="p-card-title color-naranja">
-                              INFORME N°{{ slot.item.CODIGO_DOCUMENTO }}
+                        <div class="p-card-title">
+                                    <h3 class="p-text-secondary">
+                                    {{ item.NOMBRE_DOCUMENTO }}
+                                    </h3>
+                           
                            </div>
                         <div class="p-card-content p-text-white">
-
-                            <span>{{ slot.item.DESCRIPCION_DOCUMENTO }}</span> 
+                            <p>
+                                INFORME N°{{ item.CODIGO_DOCUMENTO }}
+                            </p>
+                            <!--<p>
+                                <span>{{ item.DESCRIPCION_DOCUMENTO }}</span> 
+                            </p>-->
+                            <p>
+                                
+                                Fecha actualización: {{ $filters.formatDate(item.FECHA_ACTUALIZACION, "MMMM YYYY")  }}
+                            </p>
+                            <p>
+                                {{ item.VOLUMEN }}
+                            </p>
                           
                        </div>
                        <div class="p-card-footer p-text-white">
-                           <span class="p-p-2" style="background-color: #f38a1e">Ver más</span>
+                           <span @click="onClickInformes($event)" class="p-p-2 cursor-pointer p-bg-secondary">Ver más</span>
                        </div>
                             </div>
                         </div>  
@@ -276,9 +290,12 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+ @import  '../../../sass/_variables.scss';
+  .informe .titulo { color: $cenpromype-secondary }
+  .informe { background-color: $cenpromype-primary }
+  
 .p-dropdown-trigger {
-    background-color: #144a6d !important ;
+    background-color:  $cenpromype-primary !important ;
 }
 </style>
