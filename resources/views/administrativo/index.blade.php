@@ -17,8 +17,14 @@
                 <div id="app">
                     <base-grid 
                         :rutas="{ 'datos': 'catalogos/paises'  }"
-                        :controles="[  { 'campo': 'NOMBRE_PAIS', 'titulo' : 'Nombre', 'tipo' : 'texto' } ]"
-                        :configuracion="{ 'dataTable': {  
+                        :controles="[  
+                            { 'campo': 'NOMBRE_PAIS', 'titulo' : 'Nombre', 'tipo' : 'texto' },
+                            { 'campo': 'FECHA_ADICION', 'titulo' : 'Fecha creación', 'tipo' : 'calendario' }, 
+                            { 'campo': 'ISO2', 'titulo': 'ISO 2', 'tipo': 'lista', 'origenDatos': 'catalogos/catalogo/3/0?group=0' }
+                        ]"
+                        :conversiones="{ 'FECHA_ADICION': 'date'  }"
+                        :configuracion="{ 
+                            'dataTable': {  
                                     'columnas': [ 
                                     { 'titulo': 'ID', 'campo': 'CODIGO_PAIS' }, 
                                     {'titulo': 'Nombre', 'campo': 'NOMBRE_PAIS'},
@@ -26,13 +32,13 @@
                                     {'titulo': 'Código de divisa', 'campo': 'CODIGO_DIVISA'},
                                     {'titulo': 'iso 2', 'campo': 'ISO2'},
                                     {'titulo': 'iso 3', 'campo': 'ISO3'},
-                                    { 'titulo': 'Fecha creación', 'campo': 'FECHA_ADICION', 'filtros': [ ['date', ['DD/MM/yyyy'] ] ]}
+                                    { 'titulo': 'Fecha creación', 'campo': 'FECHA_ADICION', 'filtros': [ ['date', ['DD/MM/yyyy'] ] ] }
                     ]  } }"></base-grid>
                 </div>
         </section>
     </body>
     @yield('initialScript')
-    <script src="{{asset('js/app_adm.js?v2.0.1')}}" async></script>
+    <script src="{{asset('js/app_adm.js?v2.0.2')}}" async></script>
     @yield('scripts')
 
 </html>

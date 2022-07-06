@@ -1,30 +1,56 @@
 <template>
+        <label>
+             {{ config.titulo }}
+        </label>
         <template v-if="config.tipo == 'texto'">
-               <p-inputtext @change="onchange($event)" v-model="dato" />
+               <p-inputtext @change="onchange($event)" v-model="value" @input="oninput" />
+        </template>
+          <template v-else-if="config.tipo == 'calendario'">
+               <p-calendar @change="onchange($event)" v-model="value" @input="oninput" />
+        </template>
+           <template v-else-if="config.tipo == 'lista'">
+               <p-dropdown :options="datosLista" option-label="DESCRIPCION" option-value="ID" @change="onchange($event)" v-model="value" />
         </template>
 </template>
 
 <script>
 //import inputText from './controles/inputText.vue';
 import inputtext from 'primevue/inputtext';
+import calendar from 'primevue/calendar';
+import dropdown from 'primevue/dropdown';
+import apiLocal from '../../api/apiPortal';
+
 export default {
-    props:[ 'config', 'model' ],
+    props:[ 'config', 'value' ],
+  
     data() {
-        return {
-            dato: null
+       return {
+         datosLista : []
+       }
+    },
+    mounted() {
+        if (this.config.tipo == 'lista') {
+            this.loadList();
         }
     },
-    /*emits: {
-        'update:modelValue': (value) => {  this.dato = value  }
-    },*/
     methods: {
+        loadList() {
+            let baseApi = '/cenpromype_ws/api';
+            apiLocal.get(`${baseApi}/${this.config.origenDatos}`).then((result) => {
+                this.datosLista = result.data;
+            });
+        },
         onchange(event) {
             this.$emit("onchange", event );
-            
+        },
+        oninput(event) {
+            this.$emit("oninput", event)
         }
     },
     components: {
-        'p-inputtext' : inputtext     
+        'p-inputtext' : inputtext,
+        'p-calendar': calendar,
+        'p-dropdown': dropdown
     }
 }   
 </script>

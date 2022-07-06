@@ -19,9 +19,15 @@
         <p-dialog style="width: 50vw" v-model:visible="dialogoVisible">
             <p-tabview>
                 <p-tabpanel header="Formulario">
+                    <div class="p-fluid">
                         <template v-for="(control, index) in controles" :key="index">
-                               <controles :config="control" v-model="datoSeleccionado[control.campo]"  />
+                                <div class="p-field">
+                                    <controles :config="control" :value="datoSeleccionado[control.campo]"  />
+                                </div>
+                             
                         </template>
+                    </div>
+                       
                      
                 </p-tabpanel>
             </p-tabview>
@@ -43,7 +49,8 @@ export default {
         controles: { default: [] },
         esDetalle: { type: Boolean },
         titulo: { type: String },
-        rutas: {default: {}  }
+        rutas: {default: {}  },
+        conversiones: { default: {}},
     },
     data() {
         return  {
@@ -82,7 +89,17 @@ export default {
             this.tabla.cargando = true;
             this.cs.getAll( this.rutas['datos'], this.parametrosTabla ).then((respuesta) => {
                 this.data = respuesta.data.data.map((v, i) => {
+                //conversiones 
+                for (var key in this.conversiones) {
+                    if (this.conversiones[key] == "date") {
+                     if (v[key]) {
+                        v[key] = new Date( v[key] );
+                     }
+                  }
+                }
+
                this.tabla.columnas.forEach((columna) => {
+                    
                    if (columna.filtros) {
                         let valor = v[columna.campo];
                         columna.filtros.forEach((filtro) => {
@@ -146,7 +163,7 @@ export default {
         'p-dialog': dialog,
         'p-tabview': tabview,
         'p-tabpanel': tabpanel,
-        'controles': ocntroles
+        'controles': controles
     }
 }
 </script>

@@ -122,11 +122,13 @@ export default {
         }
     },
     mounted() {
-        if (this.elementoTo ?? "" == "") {  return; }
+        if (!this.elementoTo || this.elementoTo == "") {  return; }
+
         let elemento = this.elementoTo.replace(/[\.\#]/g, "");
         if ( this.elementoTo.indexOf(".") >= 0 ) {
            if( document.getElementsByClassName( elemento )) {
                document.getElementsByClassName(elemento)[0].appendChild( document.getElementById("informeContenedor") );
+            
            }
         } 
 

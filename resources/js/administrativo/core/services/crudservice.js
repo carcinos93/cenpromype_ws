@@ -9,7 +9,7 @@ export default class {
     getAll(route, config) {
         let filterArray= [];
         let sort = config.multiSortMeta ?? [];
-        return apiLocal.get( `${this.baseApi}/${route}`, { 
+        return apiLocal.get(`${this.baseApi}/${route}`, { 
             params: { 
                 first:  config.first || null ,
                 rows:  config.rows || null, 

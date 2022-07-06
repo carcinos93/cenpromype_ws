@@ -75,9 +75,9 @@ class NoticiasConsulta implements ShouldQueue
             $searchApi = new GoogleSearchApi();
             $searchApi->setEngineId($idBuscador);
             $searchApi->setApiKey("AIzaSyD6Zp3ixl-zPFTdvOxRpUyYZSNjnXp00UY");
-            $parametros = array('start' => 1, 'num' => $maximoPaginas, 'dateRestrict' => $restriccionFecha, 
-                                'siteSearch' => 'sitioweb',
-                                'siteSearchFilter' => 'i');
+            #  'siteSearch' => 'sitioweb'
+            #  'siteSearchFilter' => 'i'
+            $parametros = array('start' => 1, 'num' => $maximoPaginas, 'dateRestrict' => $restriccionFecha);
             if (!empty( $this->termino['adicionalTerminos'] )) {
                 $parametros['orTerms'] = implode(" ", $this->termino['adicionalTerminos']);
             }

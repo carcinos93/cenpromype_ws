@@ -116,7 +116,7 @@
                           
                        </div>
                        <div class="p-card-footer p-text-white">
-                           <span @click="onClickInformes($event)" class="p-p-2 cursor-pointer p-bg-secondary">Ver más</span>
+                           <span @click="onClickInformes(item)" class="p-p-2 cursor-pointer p-bg-secondary">Ver más</span>
                        </div>
                             </div>
                         </div>  
