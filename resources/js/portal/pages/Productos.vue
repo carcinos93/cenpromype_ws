@@ -172,7 +172,7 @@ export default {
             informe: { pdf: "", html: "" },
             informeActivo: false,
             mensaje_dialogo: "",
-            acceso: { default: '00' },
+            acceso: '00' ,
             informeItem: { default: {} }
         };
     },

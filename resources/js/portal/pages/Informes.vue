@@ -73,7 +73,7 @@ export default {
         cssClassInformes: { default: '' },
         cssClassLista: {defualt: ''},
         isLogged: { default: false },
-        acceso: { default: '00' },
+
         enlaceRegistro: {  },
     },
     data() {
@@ -87,11 +87,15 @@ export default {
             alturaDocumento: 0,
             display: false,
             mensaje_dialogo: "",
-            informe: {}
+            informe: {},
+            acceso: '00',
             // urlapi: this.urlapi
         };
     },
     mounted() {
+        if (window.nivel) {
+            this.acceso = window.nivel;
+        }
         (async () => {
             await this.cargarSectores();
         })();
